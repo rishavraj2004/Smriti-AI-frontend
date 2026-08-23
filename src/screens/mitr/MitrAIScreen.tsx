@@ -19,6 +19,7 @@ import { chatApi, ChatMessage } from '../../api/chatApi';
 import { SpeakerButton } from '../../components/SpeakerButton';
 import { ttsService } from '../../services/ttsService';
 import { sttService } from '../../services/sttService';
+import { buildMitrSystemPrompt } from '../../services/mitrPrompt';
 
 const QUICK_STARTERS: Record<string, string[]> = {
   as: [
@@ -152,7 +153,19 @@ export const MitrAIScreen: React.FC = () => {
     scrollToBottom();
 
     try {
-      const response = await chatApi.sendMessage(messageContent, activeLang);
+      const dynamicSystemPrompt = buildMitrSystemPrompt({
+        patientName: patient?.name || 'Friend',
+        age: patient?.age || 70,
+        region: patient?.region || 'North-Eastern Region',
+        language: activeLang,
+        sessionContext: {
+          platform: Platform.OS,
+          activeScreen: 'mitr',
+          timestamp: new Date().toISOString(),
+        },
+      });
+
+      const response = await chatApi.sendMessage(messageContent, activeLang, dynamicSystemPrompt);
 
       const assistantMessage: ChatMessage = {
         id: response.id || `bot-${Date.now()}`,

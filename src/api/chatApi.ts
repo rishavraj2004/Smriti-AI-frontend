@@ -29,12 +29,17 @@ export interface ChatHistoryResponse {
 
 export const chatApi = {
   /**
-   * Send a message to Mitr AI with automatic patient language context.
+   * Send a message to Mitr AI with automatic patient language and dynamic system prompt context.
    */
-  async sendMessage(message: string, language?: string): Promise<ChatResponse> {
+  async sendMessage(
+    message: string,
+    language?: string,
+    systemPrompt?: string
+  ): Promise<ChatResponse> {
     const response = await apiClient.post<ChatResponse>('/api/chat', {
       message,
       language,
+      systemPrompt,
     });
     return response.data;
   },
