@@ -20,10 +20,11 @@ export const gamesApi = {
   /**
    * Fetches the next recommended adaptive game configuration from backend.
    */
-  async getNextGame(type?: string, difficulty?: number): Promise<{ success: boolean; game: GameConfig }> {
+  async getNextGame(type?: string, difficulty?: number, language?: string): Promise<{ success: boolean; game: GameConfig }> {
     const params: Record<string, any> = {};
     if (type) params.type = normalizeBackendGameType(type);
     if (difficulty) params.difficulty = difficulty;
+    if (language) params.language = language;
 
     const response = await apiClient.get<{ success: boolean; game: GameConfig }>('/api/games/next', {
       params,

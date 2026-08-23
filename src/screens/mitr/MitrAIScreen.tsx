@@ -271,7 +271,6 @@ export const MitrAIScreen: React.FC = () => {
               style={styles.clearBtn}
               onPress={handleClearHistory}
               activeOpacity={0.7}
-              title="Clear Chat"
             >
               <Ionicons name="trash-outline" size={18} color="#CBD5E1" />
             </TouchableOpacity>
@@ -398,7 +397,6 @@ export const MitrAIScreen: React.FC = () => {
             style={[styles.micButton, isListening && styles.micButtonActive]}
             onPress={toggleVoiceInput}
             activeOpacity={0.8}
-            title="Speak into microphone"
           >
             <Ionicons
               name={isListening ? 'mic' : 'mic-outline'}
@@ -526,7 +524,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   messageRow: {
@@ -603,7 +601,7 @@ const styles = StyleSheet.create({
   },
   typingText: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   startersSection: {
@@ -615,7 +613,7 @@ const styles = StyleSheet.create({
   startersTitle: {
     fontSize: 11,
     fontWeight: '800',
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },

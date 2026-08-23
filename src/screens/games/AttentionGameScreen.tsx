@@ -8,34 +8,13 @@ import { COLORS, SHADOWS } from '../../theme/theme';
 import { ElderlyButton } from '../../components/ElderlyButton';
 import { GameResultModal } from '../../components/GameResultModal';
 import { GameConfig, SessionResultDetails, AdaptationDetails } from '../../types/games';
-
-interface TargetItem {
-  id?: string;
-  symbol: string;
-  name: string;
-  color?: string;
-}
-
-interface AttentionRound {
-  roundNumber: number;
-  target: TargetItem;
-  grid: TargetItem[];
-}
+import { getAttentionRoundsData, LocalizedAttentionItem, LocalizedAttentionRound } from '../../i18n/gameData';
 
 interface AttentionGameScreenProps {
   onBack: () => void;
   config?: GameConfig;
   onContinueNext?: () => void;
 }
-
-const DEFAULT_ITEMS_LIST: TargetItem[] = [
-  { symbol: '🌱', name: 'Assam Tea Leaf', color: COLORS.teaGreen },
-  { symbol: '🦏', name: 'Kaziranga Rhino', color: COLORS.rhinoGrey },
-  { symbol: '🥁', name: 'Bihu Dhol', color: COLORS.secondary },
-  { symbol: '🎋', name: 'Bamboo Craft', color: COLORS.bambooYellow },
-  { symbol: '🌸', name: 'Rhodo Flower', color: COLORS.flowerPink },
-  { symbol: '🌧️', name: 'Cherrapunji Rain', color: COLORS.skyBlue },
-];
 
 export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
   onBack,
@@ -44,10 +23,10 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
 }) => {
   const { patient } = useAuth();
   const { recordGameCompletion } = useGameStats();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const [roundIndex, setRoundIndex] = useState(0);
-  const [rounds, setRounds] = useState<AttentionRound[]>([]);
+  const [rounds, setRounds] = useState<LocalizedAttentionRound[]>([]);
   const [mistakes, setMistakes] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [feedback, setFeedback] = useState<'SUCCESS' | 'TRY_AGAIN' | null>(null);
@@ -63,7 +42,7 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
 
   useEffect(() => {
     setupGame();
-  }, [config]);
+  }, [config, language]);
 
   const setupGame = () => {
     startTimeRef.current = Date.now();
@@ -76,25 +55,10 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
     setSessionDetails(null);
     setAdaptationDetails(null);
 
-    if (config?.content?.rounds && Array.isArray(config.content.rounds)) {
+    if (config?.content?.rounds && Array.isArray(config.content.rounds) && config.content.rounds.length > 0) {
       setRounds(config.content.rounds);
     } else {
-      // Local fallback generator
-      const totalRounds = 5;
-      const generatedRounds: AttentionRound[] = [];
-      for (let r = 0; r < totalRounds; r++) {
-        const target = DEFAULT_ITEMS_LIST[Math.floor(Math.random() * DEFAULT_ITEMS_LIST.length)];
-        const distractors = DEFAULT_ITEMS_LIST
-          .filter((i) => i.name !== target.name)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 5);
-        const grid = [target, ...distractors].sort(() => Math.random() - 0.5);
-        generatedRounds.push({
-          roundNumber: r + 1,
-          target,
-          grid,
-        });
-      }
+      const generatedRounds = getAttentionRoundsData(language, 5);
       setRounds(generatedRounds);
     }
   };
@@ -102,7 +66,7 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
   const currentRound = rounds[roundIndex] || null;
   const totalRounds = rounds.length || 5;
 
-  const handleSelect = (item: TargetItem) => {
+  const handleSelect = (item: LocalizedAttentionItem) => {
     if (!currentRound || feedback !== null) return;
 
     const isMatch = item.name === currentRound.target.name || (item.id && item.id === currentRound.target.id);
@@ -193,7 +157,7 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
 
           {feedback === 'TRY_AGAIN' && (
             <View style={styles.tryAgainBanner}>
-              <Text style={styles.feedbackText}>{t.games.takeYourTime}</Text>
+              <Text style={styles.feedbackText}>{t.games.tryAgainGently}</Text>
             </View>
           )}
 
@@ -207,16 +171,14 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
                 activeOpacity={0.7}
               >
                 <Text style={styles.gridEmoji}>{item.symbol}</Text>
-                <Text style={styles.gridName} numberOfLines={2}>
-                  {item.name}
-                </Text>
+                <Text style={styles.gridName}>{item.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
         </>
       )}
 
-      {/* Restart */}
+      {/* Restart Game */}
       <View style={{ marginTop: 24, width: '100%' }}>
         <ElderlyButton
           title={t.games.playAgain}
@@ -231,7 +193,7 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
       <GameResultModal
         visible={resultModalVisible}
         score={rawScore}
-        accuracy={Math.round((correctAnswers / Math.max(1, correctAnswers + mistakes)) * 100)}
+        accuracy={Math.round((correctAnswers / Math.max(1, totalRounds)) * 100)}
         responseTimeMs={responseTimeMs}
         difficulty={difficulty}
         sessionDetails={sessionDetails}
@@ -253,7 +215,7 @@ export const AttentionGameScreen: React.FC<AttentionGameScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     alignItems: 'center',
     paddingBottom: 40,
   },
@@ -267,7 +229,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 12,
     marginRight: 12,
     ...SHADOWS.card,
@@ -285,7 +247,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   promptCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 20,
     padding: 20,
     width: '100%',
@@ -365,7 +327,7 @@ const styles = StyleSheet.create({
   },
   gridCard: {
     width: '47%',
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 18,
     padding: 16,
     alignItems: 'center',

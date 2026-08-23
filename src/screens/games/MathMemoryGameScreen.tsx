@@ -8,50 +8,13 @@ import { COLORS, SHADOWS } from '../../theme/theme';
 import { ElderlyButton } from '../../components/ElderlyButton';
 import { GameResultModal } from '../../components/GameResultModal';
 import { GameConfig, SessionResultDetails, AdaptationDetails } from '../../types/games';
-
-interface MathQuestion {
-  id: number;
-  prompt: string;
-  itemsDisplay?: string | null;
-  correctAnswer: number;
-  options: number[];
-  explanation?: string;
-}
+import { getMathQuestionsData, LocalizedMathQuestion } from '../../i18n/gameData';
 
 interface MathMemoryGameScreenProps {
   onBack: () => void;
   config?: GameConfig;
   onContinueNext?: () => void;
 }
-
-const DEFAULT_QUESTIONS: MathQuestion[] = [
-  {
-    id: 1,
-    prompt: 'Count how many fresh Assam tea leaves are displayed below:',
-    itemsDisplay: '🌱  🌱  🌱  🌱',
-    correctAnswer: 4,
-    options: [3, 4, 5, 6],
-  },
-  {
-    id: 2,
-    prompt: 'You take 2 morning pills and 1 evening pill. How many total pills in a day?',
-    correctAnswer: 3,
-    options: [2, 3, 4, 5],
-  },
-  {
-    id: 3,
-    prompt: 'If you have 5 fresh starfruits and share 2 with your neighbor, how many do you have left?',
-    correctAnswer: 3,
-    options: [2, 3, 4, 1],
-  },
-  {
-    id: 4,
-    prompt: 'Count how many drumsticks are used for 2 Bihu Dhols (2 per dhol):',
-    itemsDisplay: '🥢 🥢   🥢 🥢',
-    correctAnswer: 4,
-    options: [2, 4, 6, 8],
-  },
-];
 
 export const MathMemoryGameScreen: React.FC<MathMemoryGameScreenProps> = ({
   onBack,
@@ -60,9 +23,9 @@ export const MathMemoryGameScreen: React.FC<MathMemoryGameScreenProps> = ({
 }) => {
   const { patient } = useAuth();
   const { recordGameCompletion } = useGameStats();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
-  const [questions, setQuestions] = useState<MathQuestion[]>(DEFAULT_QUESTIONS);
+  const [questions, setQuestions] = useState<LocalizedMathQuestion[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [mistakes, setMistakes] = useState(0);
@@ -79,7 +42,7 @@ export const MathMemoryGameScreen: React.FC<MathMemoryGameScreenProps> = ({
 
   useEffect(() => {
     setupGame();
-  }, [config]);
+  }, [config, language]);
 
   const setupGame = () => {
     startTimeRef.current = Date.now();
@@ -92,10 +55,10 @@ export const MathMemoryGameScreen: React.FC<MathMemoryGameScreenProps> = ({
     setSessionDetails(null);
     setAdaptationDetails(null);
 
-    if (config?.content?.questions && Array.isArray(config.content.questions)) {
+    if (config?.content?.questions && Array.isArray(config.content.questions) && config.content.questions.length > 0) {
       setQuestions(config.content.questions);
     } else {
-      setQuestions(DEFAULT_QUESTIONS);
+      setQuestions(getMathQuestionsData(language));
     }
   };
 
@@ -253,7 +216,7 @@ export const MathMemoryGameScreen: React.FC<MathMemoryGameScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     alignItems: 'center',
     paddingBottom: 40,
   },
@@ -267,7 +230,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 12,
     marginRight: 12,
     ...SHADOWS.card,
@@ -285,7 +248,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   questionCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 20,
     padding: 20,
     width: '100%',
@@ -341,7 +304,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   optBtn: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 20,

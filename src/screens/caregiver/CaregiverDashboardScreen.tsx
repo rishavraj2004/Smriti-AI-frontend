@@ -105,7 +105,7 @@ export const CaregiverDashboardScreen: React.FC = () => {
 
       // 1. Fetch aggregated performance analytics from MongoDB
       const perfRes = await gamesApi.getCaregiverPerformance(caregiverToken);
-      if (perfRes && perfRes.success !== false) {
+      if (perfRes) {
         setPerformanceData(perfRes);
       }
 
@@ -490,7 +490,7 @@ export const CaregiverDashboardScreen: React.FC = () => {
                         </Text>
                         {Boolean(item.responseTimeMs) && (
                           <Text style={styles.historyMoves}>
-                            Speed: {(item.responseTimeMs / 1000).toFixed(1)}s
+                            Speed: {(((item.responseTimeMs || 0)) / 1000).toFixed(1)}s
                           </Text>
                         )}
                       </View>
@@ -602,7 +602,7 @@ export const CaregiverDashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     paddingBottom: 40,
   },
   headerCard: {
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
   caregiverName: {
     fontSize: 19,
     fontWeight: '800',
-    color: COLORS.white,
+    color: '#FFFFFF',
     marginTop: 2,
   },
   caregiverEmail: {
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   patientCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 22,
     padding: 20,
     marginBottom: 16,
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
   },
   patientSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   connectedPill: {
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   detailValue: {
@@ -764,7 +764,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   unlinkedCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 22,
     padding: 22,
     marginBottom: 20,
@@ -794,7 +794,7 @@ const styles = StyleSheet.create({
   },
   unlinkedSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 16,
@@ -823,7 +823,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   overviewCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 22,
     padding: 20,
     marginBottom: 16,
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   },
   overviewSub: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   trendBadge: {
@@ -907,7 +907,7 @@ const styles = StyleSheet.create({
   },
   sectionSub: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
   },
   syncBtn: {
     flexDirection: 'row',
@@ -915,7 +915,7 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 10,
     ...SHADOWS.card,
   },
@@ -929,7 +929,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   domainCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     padding: 16,
     ...SHADOWS.card,
@@ -958,7 +958,7 @@ const styles = StyleSheet.create({
   },
   domainCategory: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   scoreBadge: {
@@ -973,7 +973,7 @@ const styles = StyleSheet.create({
   },
   scoreNoneText: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   progressContainer: {
@@ -989,7 +989,7 @@ const styles = StyleSheet.create({
   },
   emptyDomainText: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontStyle: 'italic',
   },
   loadingBox: {
@@ -999,11 +999,11 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   noSessionsCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 18,
     padding: 24,
     alignItems: 'center',
@@ -1022,7 +1022,7 @@ const styles = StyleSheet.create({
   },
   noSessionsSub: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     textAlign: 'center',
     lineHeight: 18,
   },
@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   historyCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     padding: 16,
     flexDirection: 'row',
@@ -1070,7 +1070,7 @@ const styles = StyleSheet.create({
   },
   historyTime: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   historyMoves: {
@@ -1090,7 +1090,7 @@ const styles = StyleSheet.create({
   },
   accuracyText: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   modalOverlay: {
@@ -1101,7 +1101,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 24,
     padding: 24,
     width: '100%',
@@ -1122,7 +1122,7 @@ const styles = StyleSheet.create({
   },
   modalSubtitle: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 16,

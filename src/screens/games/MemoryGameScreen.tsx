@@ -8,6 +8,7 @@ import { COLORS, SHADOWS } from '../../theme/theme';
 import { ElderlyButton } from '../../components/ElderlyButton';
 import { GameResultModal } from '../../components/GameResultModal';
 import { GameConfig, SessionResultDetails, AdaptationDetails } from '../../types/games';
+import { getMemoryCardsData } from '../../i18n/gameData';
 
 interface Card {
   id: number;
@@ -31,7 +32,7 @@ export const MemoryGameScreen: React.FC<MemoryGameScreenProps> = ({
 }) => {
   const { patient } = useAuth();
   const { recordGameCompletion } = useGameStats();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -49,18 +50,9 @@ export const MemoryGameScreen: React.FC<MemoryGameScreenProps> = ({
   const difficulty = config?.difficulty || 1;
   const targetPairs = config?.content?.pairsCount || 4;
 
-  const DEFAULT_CARDS_DATA = [
-    { symbol: '🌱', name: 'Assam Tea' },
-    { symbol: '🦏', name: 'Kaziranga Rhino' },
-    { symbol: '🥁', name: 'Bihu Dhol' },
-    { symbol: '🦜', name: 'Hornbill Bird' },
-    { symbol: '🎋', name: 'Bamboo Craft' },
-    { symbol: '🌊', name: 'Loktak Lake' },
-  ];
-
   useEffect(() => {
     startNewGame();
-  }, [config]);
+  }, [config, language]);
 
   const startNewGame = () => {
     startTimeRef.current = Date.now();
@@ -73,20 +65,11 @@ export const MemoryGameScreen: React.FC<MemoryGameScreenProps> = ({
     setSessionDetails(null);
     setAdaptationDetails(null);
 
-    if (config?.content?.cards && Array.isArray(config.content.cards)) {
+    if (config?.content?.cards && Array.isArray(config.content.cards) && config.content.cards.length > 0) {
       setCards(config.content.cards);
     } else {
-      const selected = DEFAULT_CARDS_DATA.slice(0, targetPairs);
-      const deck = [...selected, ...selected]
-        .sort(() => Math.random() - 0.5)
-        .map((item, index) => ({
-          id: index,
-          symbol: item.symbol,
-          name: item.name,
-          isFlipped: false,
-          isMatched: false,
-        }));
-      setCards(deck);
+      const localizedDeck = getMemoryCardsData(language, targetPairs);
+      setCards(localizedDeck);
     }
   };
 
@@ -259,7 +242,7 @@ export const MemoryGameScreen: React.FC<MemoryGameScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     alignItems: 'center',
     paddingBottom: 40,
   },
@@ -273,7 +256,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 12,
     marginRight: 12,
     ...SHADOWS.card,
@@ -291,7 +274,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoBanner: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     padding: 16,
     width: '100%',
@@ -339,7 +322,7 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   cardFlipped: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderColor: COLORS.primary,
   },
   cardMatched: {
@@ -370,6 +353,6 @@ const styles = StyleSheet.create({
   cardBackText: {
     fontSize: 14,
     fontWeight: '800',
-    color: COLORS.white,
+    color: '#FFFFFF',
   },
 });

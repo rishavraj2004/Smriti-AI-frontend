@@ -106,7 +106,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       if (isCaregiverView && caregiverToken) {
         // 1. Fetch caregiver performance metrics from MongoDB
         const data = await gamesApi.getCaregiverPerformance(caregiverToken);
-        if (data && data.success !== false) {
+        if (data) {
           setCaregiverData(data);
         }
 
@@ -358,14 +358,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
           onPress={() => onNavigateTab('games')}
         >
           <Text style={styles.quickPlayBtnText}>Open Cognitive Games Hub</Text>
-          <Ionicons name="arrow-forward" size={16} color={COLORS.white} style={{ marginLeft: 6 }} />
+          <Ionicons name="arrow-forward" size={16} color="#FFFFFF" style={{ marginLeft: 6 }} />
         </TouchableOpacity>
       </View>
 
       {/* Cognitive Domains (6 Categories) */}
       <View style={styles.sectionHeader}>
         <View>
-          <Text style={styles.sectionTitle}>{t.dashboard.domainsProgress}</Text>
+          <Text style={styles.sectionTitle}>{t.dashboard.domainsTitle}</Text>
           <Text style={styles.sectionSub}>{t.dashboard.domainsSub}</Text>
         </View>
       </View>
@@ -438,7 +438,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       ) : (
         <View style={styles.historyList}>
           {activeSessionsList.map((item) => {
-            const scoreDisplay = item.performanceScore ?? item.score;
+            const scoreDisplay = Math.round(item.performanceScore ?? item.score ?? 80);
             return (
               <View key={item.id} style={styles.historyCard}>
                 <View style={styles.historyIconBox}>
@@ -446,13 +446,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
                 </View>
 
                 <View style={styles.historyLeft}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                    <Text style={styles.historyTitle} numberOfLines={1}>
-                      {item.gameTitle || getGameTitle(item.gameType)}
-                    </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Text style={styles.historyTitle}>{item.gameTitle || getGameTitle(item.gameType)}</Text>
                     {Boolean(item.difficulty) && (
                       <View style={styles.diffBadge}>
-                        <Text style={styles.diffBadgeText}>{getDifficultyLabel(item.difficulty)}</Text>
+                        <Text style={styles.diffBadgeText}>Lv {item.difficulty}</Text>
                       </View>
                     )}
                   </View>
@@ -465,7 +463,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
                   </Text>
                   {Boolean(item.responseTimeMs) && (
                     <Text style={styles.historyMoves}>
-                      Speed: {(item.responseTimeMs / 1000).toFixed(1)}s
+                      Speed: {(((item.responseTimeMs || 0)) / 1000).toFixed(1)}s
                     </Text>
                   )}
                 </View>
@@ -473,7 +471,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
                 <View style={styles.historyRight}>
                   <Text style={styles.historyScore}>{scoreDisplay}%</Text>
                   <Text style={styles.accuracyText}>
-                    {t.dashboard.accuracy}: {item.accuracy}%
+                    Accuracy: {item.accuracy}%
                   </Text>
                 </View>
               </View>
@@ -488,11 +486,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     paddingBottom: 40,
   },
   linkCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 22,
     padding: 20,
     marginBottom: 20,
@@ -512,7 +510,7 @@ const styles = StyleSheet.create({
   },
   linkCardSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     lineHeight: 20,
     marginBottom: 14,
   },
@@ -542,7 +540,7 @@ const styles = StyleSheet.create({
     color: '#991B1B',
   },
   headerCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 24,
     padding: 22,
     marginBottom: 16,
@@ -567,13 +565,13 @@ const styles = StyleSheet.create({
   },
   caregiverCode: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
     marginTop: 2,
   },
   regionSub: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   trendBadge: {
@@ -658,7 +656,7 @@ const styles = StyleSheet.create({
   adaptiveTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: COLORS.white,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   adaptiveDesc: {
@@ -678,7 +676,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   quickPlayBtnText: {
-    color: COLORS.white,
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
   },
@@ -696,7 +694,7 @@ const styles = StyleSheet.create({
   },
   sectionSub: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   syncBtn: {
@@ -705,7 +703,7 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 10,
     ...SHADOWS.card,
   },
@@ -721,7 +719,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   domainGrid: {
@@ -729,7 +727,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   domainCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     padding: 16,
     ...SHADOWS.card,
@@ -758,7 +756,7 @@ const styles = StyleSheet.create({
   },
   domainCategory: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   scoreBadge: {
@@ -773,7 +771,7 @@ const styles = StyleSheet.create({
   },
   scoreNoneText: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   progressContainer: {
@@ -789,14 +787,14 @@ const styles = StyleSheet.create({
   },
   emptyDomainText: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontStyle: 'italic',
   },
   historyList: {
     gap: 12,
   },
   historyCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     padding: 16,
     flexDirection: 'row',
@@ -835,7 +833,7 @@ const styles = StyleSheet.create({
   },
   historyTime: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   historyMoves: {
@@ -855,7 +853,7 @@ const styles = StyleSheet.create({
   },
   accuracyText: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
 });

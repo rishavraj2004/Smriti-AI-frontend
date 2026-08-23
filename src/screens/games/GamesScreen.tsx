@@ -46,7 +46,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
   initialGame = 'list',
   onResetInitialGame,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [activeGame, setActiveGame] = useState<GameViewType>(initialGame);
   const [gameConfig, setGameConfig] = useState<GameConfig | undefined>(undefined);
   const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
@@ -54,7 +54,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
   const fetchAndLaunchGame = useCallback(async (requestedType?: string) => {
     try {
       setIsLoadingNext(true);
-      const res = await gamesApi.getNextGame(requestedType);
+      const res = await gamesApi.getNextGame(requestedType, undefined, language);
       if (res && res.success && res.game) {
         setGameConfig(res.game);
         setActiveGame(mapBackendToViewType(res.game.gameType));
@@ -78,7 +78,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
     } finally {
       setIsLoadingNext(false);
     }
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     if (initialGame && initialGame !== 'list') {
@@ -205,10 +205,9 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         <Text style={styles.heroDesc}>
           Dynamically tailored to your cognitive comfort zone and recent sessions.
         </Text>
-
         <View style={styles.heroPlayButton}>
           <Text style={styles.heroPlayButtonText}>Start Today's Session</Text>
-          <Ionicons name="arrow-forward" size={18} color={COLORS.white} style={{ marginLeft: 6 }} />
+          <Ionicons name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 6 }} />
         </View>
       </TouchableOpacity>
 
@@ -263,12 +262,12 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
 
         {/* Game 3: Math Memory */}
         <TouchableOpacity
-          style={[styles.gameCard, { backgroundColor: '#EFF6FF', borderColor: '#2563EB' }]}
+          style={[styles.gameCard, { backgroundColor: '#EFF6FF', borderColor: COLORS.skyBlue }]}
           activeOpacity={0.85}
           onPress={() => fetchAndLaunchGame('mathMemory')}
         >
           <View style={styles.gameCardHeader}>
-            <MaterialCommunityIcons name="calculator-variant" size={28} color="#1D4ED8" />
+            <MaterialCommunityIcons name="calculator-variant-outline" size={28} color={COLORS.skyBlue} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <View style={[styles.badgePill, { backgroundColor: '#DBEAFE' }]}>
                 <Text style={[styles.badgePillText, { color: '#1D4ED8' }]}>
@@ -287,15 +286,15 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
 
         {/* Game 4: Object Recognition */}
         <TouchableOpacity
-          style={[styles.gameCard, { backgroundColor: '#FDF2F8', borderColor: '#DB2777' }]}
+          style={[styles.gameCard, { backgroundColor: '#FEF2F2', borderColor: '#EF4444' }]}
           activeOpacity={0.85}
           onPress={() => fetchAndLaunchGame('objectRecognition')}
         >
           <View style={styles.gameCardHeader}>
-            <Ionicons name="cube-outline" size={28} color="#BE185D" />
+            <MaterialCommunityIcons name="puzzle-outline" size={28} color="#EF4444" />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <View style={[styles.badgePill, { backgroundColor: '#FCE7F3' }]}>
-                <Text style={[styles.badgePillText, { color: '#BE185D' }]}>
+              <View style={[styles.badgePill, { backgroundColor: '#FEE2E2' }]}>
+                <Text style={[styles.badgePillText, { color: '#B91C1C' }]}>
                   {t.games.recognitionCategory}
                 </Text>
               </View>
@@ -311,16 +310,16 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
 
         {/* Game 5: Routine Recall */}
         <TouchableOpacity
-          style={[styles.gameCard, { backgroundColor: '#FAF5FF', borderColor: '#7E22CE' }]}
+          style={[styles.gameCard, { backgroundColor: '#FAF5FF', borderColor: '#9333EA' }]}
           activeOpacity={0.85}
           onPress={() => fetchAndLaunchGame('routineRecall')}
         >
           <View style={styles.gameCardHeader}>
-            <Ionicons name="time-outline" size={28} color="#7E22CE" />
+            <Ionicons name="list-circle-outline" size={30} color="#9333EA" />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <View style={[styles.badgePill, { backgroundColor: '#F3E8FF' }]}>
                 <Text style={[styles.badgePillText, { color: '#7E22CE' }]}>
-                  {t.games.routineCategory}
+                  {t.games.sequenceCategory}
                 </Text>
               </View>
               <SpeakerButton
@@ -364,12 +363,12 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     paddingBottom: 40,
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -382,12 +381,12 @@ const styles = StyleSheet.create({
   },
   loadingSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 6,
     textAlign: 'center',
   },
   headerBanner: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 24,
     padding: 20,
     alignItems: 'center',
@@ -415,7 +414,7 @@ const styles = StyleSheet.create({
   },
   headerSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -452,7 +451,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: COLORS.white,
+    color: '#FFFFFF',
     marginBottom: 6,
   },
   heroDesc: {
@@ -472,7 +471,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   heroPlayButtonText: {
-    color: COLORS.white,
+    color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '700',
   },
@@ -515,7 +514,7 @@ const styles = StyleSheet.create({
   },
   gameCardSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     lineHeight: 20,
   },
 });

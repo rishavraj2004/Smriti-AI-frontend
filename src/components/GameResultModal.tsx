@@ -85,8 +85,8 @@ export const GameResultModal: React.FC<GameResultModalProps> = ({
                 {adaptationDetails.nextDifficulty > adaptationDetails.previousDifficulty
                   ? '📈 Difficulty Increased'
                   : adaptationDetails.nextDifficulty < adaptationDetails.previousDifficulty
-                  ? '🎯 Pacing Adjusted'
-                  : '✨ Consistent Rhythm'}
+                    ? '🎯 Pacing Adjusted'
+                    : '✨ Consistent Rhythm'}
               </Text>
               <Text style={styles.adaptationReason}>{adaptationDetails.reason}</Text>
             </View>
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 24,
     padding: 24,
     width: '100%',
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   congratsSub: {
     fontSize: 15,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 4,
     marginBottom: 16,
     textAlign: 'center',
@@ -186,13 +186,13 @@ const styles = StyleSheet.create({
   },
   metricTitle: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   metricValue: {
     fontSize: 17,
     fontWeight: '800',
-    color: COLORS.textPrimary,
+    color: COLORS.textDark,
     marginTop: 2,
   },
   metricDivider: {
@@ -231,6 +231,6 @@ const styles = StyleSheet.create({
   secondaryBtnText: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
   },
 });

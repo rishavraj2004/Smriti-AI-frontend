@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   },
   sectionSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginBottom: 14,
   },
   moodGrid: {
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   },
   sectionSubText: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   gamesGrid: {
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   },
   gameCardSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     lineHeight: 20,
   },
   routineHeader: {
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   },
   routineTime: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginTop: 2,
     fontWeight: '600',
   },

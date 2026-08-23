@@ -8,56 +8,13 @@ import { COLORS, SHADOWS } from '../../theme/theme';
 import { ElderlyButton } from '../../components/ElderlyButton';
 import { GameResultModal } from '../../components/GameResultModal';
 import { GameConfig, SessionResultDetails, AdaptationDetails } from '../../types/games';
-
-interface ObjectQuestion {
-  id: number;
-  prompt: string;
-  correctAnswer: string;
-  options: { label: string; emoji: string; name: string }[];
-  hint: string;
-}
+import { getObjectQuestionsData, LocalizedObjectQuestion } from '../../i18n/gameData';
 
 interface ObjectRecognitionGameScreenProps {
   onBack: () => void;
   config?: GameConfig;
   onContinueNext?: () => void;
 }
-
-const DEFAULT_QUESTIONS: ObjectQuestion[] = [
-  {
-    id: 1,
-    prompt: 'Which item is the famous traditional Assam Bamboo Basket (Japi / Khang)?',
-    correctAnswer: 'Bamboo Basket',
-    options: [
-      { label: 'A', emoji: '🎋', name: 'Bamboo Basket' },
-      { label: 'B', emoji: '🏺', name: 'Clay Pot' },
-      { label: 'C', emoji: '🪑', name: 'Wooden Chair' },
-    ],
-    hint: 'Look for the woven green and yellow bamboo material!',
-  },
-  {
-    id: 2,
-    prompt: 'Which fruit is the famous North Eastern Kordoi / Starfruit?',
-    correctAnswer: 'Starfruit',
-    options: [
-      { label: 'A', emoji: '🍎', name: 'Red Apple' },
-      { label: 'B', emoji: '⭐', name: 'Starfruit' },
-      { label: 'C', emoji: '🍌', name: 'Banana' },
-    ],
-    hint: 'It has star-shaped ridged slices!',
-  },
-  {
-    id: 3,
-    prompt: 'Which musical instrument is played during Bihu celebrations?',
-    correctAnswer: 'Bihu Dhol',
-    options: [
-      { label: 'A', emoji: '🥁', name: 'Bihu Dhol' },
-      { label: 'B', emoji: '🎸', name: 'Guitar' },
-      { label: 'C', emoji: '🎺', name: 'Trumpet' },
-    ],
-    hint: 'It is a double-sided wooden drum played with sticks!',
-  },
-];
 
 export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenProps> = ({
   onBack,
@@ -66,9 +23,9 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
 }) => {
   const { patient } = useAuth();
   const { recordGameCompletion } = useGameStats();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
-  const [questions, setQuestions] = useState<ObjectQuestion[]>(DEFAULT_QUESTIONS);
+  const [questions, setQuestions] = useState<LocalizedObjectQuestion[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [mistakes, setMistakes] = useState(0);
@@ -86,7 +43,7 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
 
   useEffect(() => {
     setupGame();
-  }, [config]);
+  }, [config, language]);
 
   const setupGame = () => {
     startTimeRef.current = Date.now();
@@ -100,10 +57,10 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
     setSessionDetails(null);
     setAdaptationDetails(null);
 
-    if (config?.content?.questions && Array.isArray(config.content.questions)) {
+    if (config?.content?.questions && Array.isArray(config.content.questions) && config.content.questions.length > 0) {
       setQuestions(config.content.questions);
     } else {
-      setQuestions(DEFAULT_QUESTIONS);
+      setQuestions(getObjectQuestionsData(language));
     }
   };
 
@@ -195,11 +152,11 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
               onPress={() => setShowHint(true)}
               activeOpacity={0.8}
             >
-              <Text style={styles.hintToggleText}>{t.games.needAClue}</Text>
+              <Text style={styles.hintToggleText}>{t.games.needHint}</Text>
             </TouchableOpacity>
           )}
 
-          <Text style={styles.optionsPrompt}>{t.games.chooseTheCorrectObject}</Text>
+          <Text style={styles.optionsPrompt}>{t.games.selectYourAnswer}</Text>
 
           <View style={styles.optionsContainer}>
             {currentQ.options.map((opt, index) => {
@@ -274,7 +231,7 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     alignItems: 'center',
     paddingBottom: 40,
   },
@@ -288,7 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 12,
     marginRight: 12,
     ...SHADOWS.card,
@@ -306,7 +263,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   questionCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 20,
     padding: 20,
     width: '100%',
@@ -376,7 +333,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   optBtn: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 18,

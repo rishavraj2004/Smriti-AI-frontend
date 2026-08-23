@@ -98,6 +98,7 @@ export interface DomainScores {
 }
 
 export interface CaregiverPerformanceData {
+  success?: boolean;
   patient?: {
     id: string;
     name: string;

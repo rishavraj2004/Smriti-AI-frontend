@@ -8,27 +8,13 @@ import { COLORS, SHADOWS } from '../../theme/theme';
 import { ElderlyButton } from '../../components/ElderlyButton';
 import { GameResultModal } from '../../components/GameResultModal';
 import { GameConfig, SessionResultDetails, AdaptationDetails } from '../../types/games';
-
-interface RoutineStep {
-  id: string;
-  order: number;
-  title: string;
-  emoji: string;
-  timeSlot: string;
-}
+import { getRoutineStepsData, LocalizedRoutineStep } from '../../i18n/gameData';
 
 interface RoutineRecallGameScreenProps {
   onBack: () => void;
   config?: GameConfig;
   onContinueNext?: () => void;
 }
-
-const DEFAULT_STEPS: RoutineStep[] = [
-  { id: '1', order: 1, title: 'Morning Walk & Warm Tea', emoji: '🌅', timeSlot: '7:30 AM' },
-  { id: '2', order: 2, title: 'Cognitive Games & Memory Time', emoji: '🧠', timeSlot: '9:00 AM' },
-  { id: '3', order: 3, title: 'Evening Assam Tea & Garden Stroll', emoji: '🍵', timeSlot: '3:30 PM' },
-  { id: '4', order: 4, title: 'Family Dinner & Rest', emoji: '👨‍👩‍👧', timeSlot: '6:30 PM' },
-];
 
 export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = ({
   onBack,
@@ -37,11 +23,11 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
 }) => {
   const { patient } = useAuth();
   const { recordGameCompletion } = useGameStats();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
-  const [correctSequence, setCorrectSequence] = useState<RoutineStep[]>(DEFAULT_STEPS);
-  const [availableSteps, setAvailableSteps] = useState<RoutineStep[]>([]);
-  const [placedSequence, setPlacedSequence] = useState<RoutineStep[]>([]);
+  const [correctSequence, setCorrectSequence] = useState<LocalizedRoutineStep[]>([]);
+  const [availableSteps, setAvailableSteps] = useState<LocalizedRoutineStep[]>([]);
+  const [placedSequence, setPlacedSequence] = useState<LocalizedRoutineStep[]>([]);
   const [mistakes, setMistakes] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -56,7 +42,7 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
 
   useEffect(() => {
     setupGame();
-  }, [config]);
+  }, [config, language]);
 
   const setupGame = () => {
     startTimeRef.current = Date.now();
@@ -68,7 +54,7 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
     setSessionDetails(null);
     setAdaptationDetails(null);
 
-    if (config?.content?.correctSequence && Array.isArray(config.content.correctSequence)) {
+    if (config?.content?.correctSequence && Array.isArray(config.content.correctSequence) && config.content.correctSequence.length > 0) {
       setCorrectSequence(config.content.correctSequence);
       if (config.content.availableSteps) {
         setAvailableSteps(config.content.availableSteps);
@@ -76,21 +62,22 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
         setAvailableSteps([...config.content.correctSequence].sort(() => Math.random() - 0.5));
       }
     } else {
-      setCorrectSequence(DEFAULT_STEPS);
-      setAvailableSteps([...DEFAULT_STEPS].sort(() => Math.random() - 0.5));
+      const localizedSteps = getRoutineStepsData(language);
+      setCorrectSequence(localizedSteps);
+      setAvailableSteps([...localizedSteps].sort(() => Math.random() - 0.5));
     }
   };
 
   const totalSteps = correctSequence.length;
 
-  const handleSelectStep = (step: RoutineStep) => {
+  const handleSelectStep = (step: LocalizedRoutineStep) => {
     if (placedSequence.length >= totalSteps) return;
     setPlacedSequence((prev) => [...prev, step]);
     setAvailableSteps((prev) => prev.filter((s) => s.id !== step.id));
     setIsCorrect(null);
   };
 
-  const handleRemoveStep = (step: RoutineStep) => {
+  const handleRemoveStep = (step: LocalizedRoutineStep) => {
     setPlacedSequence((prev) => prev.filter((s) => s.id !== step.id));
     setAvailableSteps((prev) => [...prev, step]);
     setIsCorrect(null);
@@ -184,7 +171,7 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
                 </TouchableOpacity>
               ) : (
                 <View style={styles.emptySlot}>
-                  <Text style={styles.emptySlotText}>{t.games.tapAnActivity}</Text>
+                  <Text style={styles.emptySlotText}>{t.games.tapActivityBelow}</Text>
                 </View>
               )}
             </View>
@@ -195,7 +182,7 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
       {/* Verification Feedback */}
       {isCorrect === false && (
         <View style={styles.errorBanner}>
-          <Text style={styles.errorText}>{t.games.notQuiteRight}</Text>
+          <Text style={styles.errorText}>{t.games.outOfSequenceError}</Text>
         </View>
       )}
 
@@ -203,7 +190,7 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
       {placedSequence.length === totalSteps && (
         <View style={{ width: '100%', marginBottom: 16 }}>
           <ElderlyButton
-            title={t.games.checkSequence}
+            title={t.games.checkSequenceBtn}
             onPress={checkOrder}
             variant="primary"
             icon="✓"
@@ -273,7 +260,7 @@ export const RoutineRecallGameScreen: React.FC<RoutineRecallGameScreenProps> = (
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     alignItems: 'center',
     paddingBottom: 40,
   },
@@ -287,7 +274,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 12,
     marginRight: 12,
     ...SHADOWS.card,
@@ -305,7 +292,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   instructionBanner: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     padding: 16,
     width: '100%',
@@ -369,7 +356,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 14,
     padding: 12,
     borderWidth: 2,
@@ -425,7 +412,7 @@ const styles = StyleSheet.create({
   availableCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1.5,
@@ -443,7 +430,7 @@ const styles = StyleSheet.create({
   },
   availableTime: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontWeight: '600',
     marginTop: 2,
   },

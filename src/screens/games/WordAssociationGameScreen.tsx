@@ -8,44 +8,13 @@ import { COLORS, SHADOWS } from '../../theme/theme';
 import { ElderlyButton } from '../../components/ElderlyButton';
 import { GameResultModal } from '../../components/GameResultModal';
 import { GameConfig, SessionResultDetails, AdaptationDetails } from '../../types/games';
-
-interface WordPrompt {
-  id: number;
-  prefix: string;
-  correctWord: string;
-  options: string[];
-  hint?: string;
-}
+import { getWordPromptsData, LocalizedWordPrompt } from '../../i18n/gameData';
 
 interface WordAssociationGameScreenProps {
   onBack: () => void;
   config?: GameConfig;
   onContinueNext?: () => void;
 }
-
-const DEFAULT_PROMPTS: WordPrompt[] = [
-  {
-    id: 1,
-    prefix: 'Morning Assam Tea and...',
-    correctWord: 'Warm Water',
-    options: ['Warm Water', 'Jeep Safari', 'Ice Cream'],
-    hint: 'A comforting morning drink before breakfast!',
-  },
-  {
-    id: 2,
-    prefix: 'Spring Bihu Festival and...',
-    correctWord: 'Dhol Dance',
-    options: ['Dhol Dance', 'Snowfall', 'Football'],
-    hint: 'Rhythmic music played with bamboo sticks and drums!',
-  },
-  {
-    id: 3,
-    prefix: 'Kaziranga National Park and...',
-    correctWord: 'One-Horned Rhino',
-    options: ['One-Horned Rhino', 'Polar Bear', 'Desert Cactus'],
-    hint: 'The iconic wildlife animal of Assam forest!',
-  },
-];
 
 export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps> = ({
   onBack,
@@ -54,9 +23,9 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
 }) => {
   const { patient } = useAuth();
   const { recordGameCompletion } = useGameStats();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
-  const [prompts, setPrompts] = useState<WordPrompt[]>(DEFAULT_PROMPTS);
+  const [prompts, setPrompts] = useState<LocalizedWordPrompt[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [mistakes, setMistakes] = useState(0);
@@ -73,7 +42,7 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
 
   useEffect(() => {
     setupGame();
-  }, [config]);
+  }, [config, language]);
 
   const setupGame = () => {
     startTimeRef.current = Date.now();
@@ -86,10 +55,10 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
     setSessionDetails(null);
     setAdaptationDetails(null);
 
-    if (config?.content?.questions && Array.isArray(config.content.questions)) {
+    if (config?.content?.questions && Array.isArray(config.content.questions) && config.content.questions.length > 0) {
       setPrompts(config.content.questions);
     } else {
-      setPrompts(DEFAULT_PROMPTS);
+      setPrompts(getWordPromptsData(language));
     }
   };
 
@@ -179,7 +148,7 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
             </View>
           )}
 
-          <Text style={styles.optionsPrompt}>{t.games.chooseTheMatchingWord}:</Text>
+          <Text style={styles.optionsPrompt}>{t.games.selectMatchingPhrase}</Text>
 
           <View style={styles.optionsList}>
             {currentP.options.map((opt, index) => {
@@ -253,7 +222,7 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.bgMain,
     alignItems: 'center',
     paddingBottom: 40,
   },
@@ -267,7 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 12,
     marginRight: 12,
     ...SHADOWS.card,
@@ -285,7 +254,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   promptCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 20,
     padding: 22,
     width: '100%',
@@ -359,7 +328,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   optionCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 20,
