@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../../theme/theme';
@@ -8,6 +8,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { getFormattedDate } from '../../utils/formatters';
 import { MainTabType, GameViewType } from '../../types/navigation';
 import { SpeakerButton } from '../../components/SpeakerButton';
+import { ttsService } from '../../services/ttsService';
 
 interface HomeScreenProps {
   onNavigateTab: (tab: MainTabType) => void;
@@ -15,10 +16,12 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
-  const { patient } = useAuth();
+  const { patient, appLanguage } = useAuth();
   const { totalGamesPlayedToday, averageScore } = useGameStats();
   const { t } = useTranslation();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
+
+  const activeLang = patient?.language || appLanguage || 'en';
 
   const [routines, setRoutines] = useState([
     { id: 'r1', key: 'routine1', time: '07:30 AM', completed: false },
@@ -41,6 +44,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
   const patientRegion = patient?.region || 'North Eastern Region';
 
   const fullGreetingSpeech = `${greetingText}, ${patientName}. ${formattedDate}`;
+
+  // Automatically voice greeting when the patient opens the app
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ttsService.speak(fullGreetingSpeech, activeLang);
+    }, 700);
+    return () => clearTimeout(timer);
+  }, []);
 
   const moods = [
     { id: 'peaceful', emoji: '🌸', label: t.home.peaceful },
@@ -74,7 +85,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
               <Text style={styles.greetingTitle}>
                 {greetingText}, {patientName}
               </Text>
-              <SpeakerButton text={fullGreetingSpeech} size="medium" />
+              <SpeakerButton
+                text={fullGreetingSpeech}
+                language={activeLang}
+                size="medium"
+                backgroundColor="rgba(255, 255, 255, 0.2)"
+                color="#FFFFFF"
+              />
             </View>
             <Text style={styles.regionSub}>📍 {patientRegion}</Text>
             <Text style={styles.dateSub}>📅 {formattedDate}</Text>
@@ -94,6 +111,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
               {averageScore !== null ? `${averageScore}%` : '—'}
             </Text>
           </View>
+          <SpeakerButton
+            text={`${t.home.gamesPlayedToday}: ${totalGamesPlayedToday}. ${t.home.sessionScore}: ${averageScore !== null ? averageScore + '%' : 'no data'}`}
+            language={activeLang}
+            size="small"
+            backgroundColor="rgba(255, 255, 255, 0.15)"
+            color="#FFFFFF"
+            style={{ marginLeft: 6 }}
+          />
         </View>
       </View>
 
@@ -101,7 +126,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
       <View style={styles.sectionCard}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
           <Text style={styles.sectionTitle}>{t.home.feelingTitle}</Text>
-          <SpeakerButton text={`${t.home.feelingTitle}. ${t.home.feelingSub}`} size="small" />
+          <SpeakerButton
+            text={`${t.home.feelingTitle}. ${t.home.feelingSub}`}
+            language={activeLang}
+            size="small"
+          />
         </View>
         <Text style={styles.sectionSub}>{t.home.feelingSub}</Text>
 
@@ -112,7 +141,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
               <TouchableOpacity
                 key={m.id}
                 style={[styles.moodItem, isSelected && styles.moodItemSelected]}
-                onPress={() => setSelectedMood(m.id)}
+                onPress={() => {
+                  setSelectedMood(m.id);
+                  ttsService.speak(m.label, activeLang);
+                }}
                 activeOpacity={0.8}
               >
                 <Text style={styles.moodEmoji}>{m.emoji}</Text>
@@ -131,7 +163,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
           <Text style={styles.sectionMainTitle}>{t.home.recommendedExercises}</Text>
           <Text style={styles.sectionSubText}>{t.home.tapToStart}</Text>
         </View>
-        <SpeakerButton text={`${t.home.recommendedExercises}. ${t.home.tapToStart}`} size="small" />
+        <SpeakerButton
+          text={`${t.home.recommendedExercises}. ${t.home.tapToStart}`}
+          language={activeLang}
+          size="small"
+        />
       </View>
 
       <View style={styles.gamesGrid}>
@@ -143,8 +179,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
         >
           <View style={styles.gameCardHeader}>
             <MaterialCommunityIcons name="cards-playing-outline" size={28} color={COLORS.teaGreen} />
-            <View style={[styles.badgePill, { backgroundColor: COLORS.primaryLight }]}>
-              <Text style={styles.badgePillText}>{t.games.memoryCategory}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: COLORS.primaryLight }]}>
+                <Text style={styles.badgePillText}>{t.games.memoryCategory}</Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game1Title}. ${t.games.game1Sub}`}
+                language={activeLang}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game1Title}</Text>
@@ -159,10 +202,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
         >
           <View style={styles.gameCardHeader}>
             <Ionicons name="eye-outline" size={28} color={COLORS.secondaryDark} />
-            <View style={[styles.badgePill, { backgroundColor: COLORS.secondaryLight }]}>
-              <Text style={[styles.badgePillText, { color: COLORS.secondaryDark }]}>
-                {t.games.focusCategory}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: COLORS.secondaryLight }]}>
+                <Text style={[styles.badgePillText, { color: COLORS.secondaryDark }]}>
+                  {t.games.focusCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game2Title}. ${t.games.game2Sub}`}
+                language={activeLang}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game2Title}</Text>
@@ -177,10 +227,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
         >
           <View style={styles.gameCardHeader}>
             <MaterialCommunityIcons name="calculator-variant" size={28} color="#1D4ED8" />
-            <View style={[styles.badgePill, { backgroundColor: '#DBEAFE' }]}>
-              <Text style={[styles.badgePillText, { color: '#1D4ED8' }]}>
-                {t.games.numbersCategory}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: '#DBEAFE' }]}>
+                <Text style={[styles.badgePillText, { color: '#1D4ED8' }]}>
+                  {t.games.numbersCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game3Title}. ${t.games.game3Sub}`}
+                language={activeLang}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game3Title}</Text>
@@ -191,7 +248,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
       {/* Daily Routine Checklist */}
       <View style={styles.sectionCard}>
         <View style={styles.routineHeader}>
-          <Text style={styles.sectionTitle}>{t.home.routineRhythm}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text style={styles.sectionTitle}>{t.home.routineRhythm}</Text>
+            <SpeakerButton
+              text={`${t.home.routineRhythm}. ${t.home.checkOffTasks}. ${completedCount} of ${routines.length} completed.`}
+              language={activeLang}
+              size="small"
+            />
+          </View>
           <Text style={styles.routineCount}>
             {completedCount} / {routines.length} {t.home.done}
           </Text>
@@ -215,6 +279,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
                 </Text>
                 <Text style={styles.routineTime}>⏰ {item.time}</Text>
               </View>
+              <SpeakerButton
+                text={`${getRoutineTitle(item.key)} at ${item.time}`}
+                language={activeLang}
+                size="small"
+              />
             </TouchableOpacity>
           ))}
         </View>
@@ -249,59 +318,58 @@ const styles = StyleSheet.create({
   regionSub: {
     color: COLORS.primaryLight,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
     marginTop: 4,
   },
   dateSub: {
     color: '#E2E8F0',
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: '600',
     marginTop: 2,
   },
   snapshotRow: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderRadius: 14,
-    padding: 12,
+    borderRadius: 16,
+    padding: 14,
     alignItems: 'center',
+    justifyContent: 'space-around',
   },
   snapshotBox: {
-    flex: 1,
     alignItems: 'center',
+    flex: 1,
   },
   snapshotDivider: {
     width: 1,
-    height: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    height: '80%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   snapshotLabel: {
-    color: COLORS.primaryLight,
+    color: '#CBD5E1',
     fontSize: 12,
     fontWeight: '600',
+    marginBottom: 4,
   },
   snapshotValue: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '900',
-    marginTop: 2,
   },
   sectionCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 18,
-    marginBottom: 18,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    marginBottom: 16,
     ...SHADOWS.card,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
     color: COLORS.textDark,
   },
   sectionSub: {
-    fontSize: 13,
-    color: COLORS.textMuted,
-    marginTop: 2,
+    fontSize: 14,
+    color: COLORS.textSecondary,
     marginBottom: 14,
   },
   moodGrid: {
@@ -311,33 +379,37 @@ const styles = StyleSheet.create({
   },
   moodItem: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-    borderRadius: 14,
-    paddingVertical: 12,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#CBD5E1',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
   },
   moodItemSelected: {
-    backgroundColor: COLORS.primaryLight,
     borderColor: COLORS.primary,
+    backgroundColor: COLORS.primaryLight + '30',
   },
   moodEmoji: {
     fontSize: 28,
     marginBottom: 4,
   },
   moodLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
-    color: COLORS.textMuted,
-    textAlign: 'center',
+    color: COLORS.textDark,
   },
   moodLabelSelected: {
     color: COLORS.primaryDark,
     fontWeight: '900',
   },
   sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 12,
+    marginTop: 6,
   },
   sectionMainTitle: {
     fontSize: 20,
@@ -345,24 +417,25 @@ const styles = StyleSheet.create({
     color: COLORS.textDark,
   },
   sectionSubText: {
-    fontSize: 14,
-    color: COLORS.textMuted,
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
   },
   gamesGrid: {
     gap: 12,
-    marginBottom: 18,
+    marginBottom: 16,
   },
   gameCard: {
+    padding: 16,
     borderRadius: 20,
-    padding: 18,
-    borderWidth: 2.5,
+    borderWidth: 1.5,
     ...SHADOWS.card,
   },
   gameCardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   badgePill: {
     paddingHorizontal: 10,
@@ -382,22 +455,19 @@ const styles = StyleSheet.create({
   },
   gameCardSub: {
     fontSize: 14,
-    color: COLORS.textMuted,
-    lineHeight: 19,
+    color: COLORS.textSecondary,
+    lineHeight: 20,
   },
   routineHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 2,
   },
   routineCount: {
-    backgroundColor: COLORS.primaryLight,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
     fontSize: 13,
     fontWeight: '800',
-    color: COLORS.primaryDark,
+    color: COLORS.primary,
   },
   routineList: {
     gap: 10,
@@ -405,29 +475,30 @@ const styles = StyleSheet.create({
   routineRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 14,
+    borderRadius: 16,
     backgroundColor: '#F8FAFC',
-    padding: 12,
-    borderRadius: 14,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: '#E2E8F0',
+    gap: 12,
   },
   routineRowDone: {
-    backgroundColor: COLORS.successLight,
-    borderColor: COLORS.success,
+    backgroundColor: '#F0FDF4',
+    borderColor: '#86EFAC',
   },
   checkCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
     borderWidth: 2,
-    borderColor: '#94A3B8',
-    alignItems: 'center',
+    borderColor: '#CBD5E1',
     justifyContent: 'center',
-    marginRight: 12,
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   checkCircleDone: {
-    backgroundColor: COLORS.success,
-    borderColor: COLORS.success,
+    backgroundColor: '#22C55E',
+    borderColor: '#22C55E',
   },
   routineTitle: {
     fontSize: 15,
@@ -436,11 +507,12 @@ const styles = StyleSheet.create({
   },
   routineTitleDone: {
     textDecorationLine: 'line-through',
-    color: COLORS.textMuted,
+    color: '#64748B',
   },
   routineTime: {
     fontSize: 12,
-    color: COLORS.textMuted,
+    color: COLORS.textSecondary,
     marginTop: 2,
+    fontWeight: '600',
   },
 });

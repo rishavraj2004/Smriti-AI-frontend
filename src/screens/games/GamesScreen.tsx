@@ -223,8 +223,14 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         >
           <View style={styles.gameCardHeader}>
             <MaterialCommunityIcons name="cards-playing-outline" size={28} color={COLORS.teaGreen} />
-            <View style={[styles.badgePill, { backgroundColor: COLORS.primaryLight }]}>
-              <Text style={styles.badgePillText}>{t.games.memoryCategory}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: COLORS.primaryLight }]}>
+                <Text style={styles.badgePillText}>{t.games.memoryCategory}</Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game1Title}. ${t.games.game1Sub}`}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game1Title}</Text>
@@ -239,10 +245,16 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         >
           <View style={styles.gameCardHeader}>
             <Ionicons name="eye-outline" size={28} color={COLORS.secondaryDark} />
-            <View style={[styles.badgePill, { backgroundColor: COLORS.secondaryLight }]}>
-              <Text style={[styles.badgePillText, { color: COLORS.secondaryDark }]}>
-                {t.games.focusCategory}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: COLORS.secondaryLight }]}>
+                <Text style={[styles.badgePillText, { color: COLORS.secondaryDark }]}>
+                  {t.games.focusCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game2Title}. ${t.games.game2Sub}`}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game2Title}</Text>
@@ -257,10 +269,16 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         >
           <View style={styles.gameCardHeader}>
             <MaterialCommunityIcons name="calculator-variant" size={28} color="#1D4ED8" />
-            <View style={[styles.badgePill, { backgroundColor: '#DBEAFE' }]}>
-              <Text style={[styles.badgePillText, { color: '#1D4ED8' }]}>
-                {t.games.numbersCategory}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: '#DBEAFE' }]}>
+                <Text style={[styles.badgePillText, { color: '#1D4ED8' }]}>
+                  {t.games.numbersCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game3Title}. ${t.games.game3Sub}`}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game3Title}</Text>
@@ -275,10 +293,16 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         >
           <View style={styles.gameCardHeader}>
             <Ionicons name="cube-outline" size={28} color="#BE185D" />
-            <View style={[styles.badgePill, { backgroundColor: '#FCE7F3' }]}>
-              <Text style={[styles.badgePillText, { color: '#BE185D' }]}>
-                {t.games.recognitionCategory}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: '#FCE7F3' }]}>
+                <Text style={[styles.badgePillText, { color: '#BE185D' }]}>
+                  {t.games.recognitionCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game4Title}. ${t.games.game4Sub}`}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game4Title}</Text>
@@ -293,10 +317,16 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         >
           <View style={styles.gameCardHeader}>
             <Ionicons name="time-outline" size={28} color="#7E22CE" />
-            <View style={[styles.badgePill, { backgroundColor: '#F3E8FF' }]}>
-              <Text style={[styles.badgePillText, { color: '#7E22CE' }]}>
-                {t.games.routineCategory}
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: '#F3E8FF' }]}>
+                <Text style={[styles.badgePillText, { color: '#7E22CE' }]}>
+                  {t.games.routineCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game5Title}. ${t.games.game5Sub}`}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game5Title}</Text>
@@ -305,16 +335,22 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
 
         {/* Game 6: Word Association */}
         <TouchableOpacity
-          style={[styles.gameCard, { backgroundColor: '#F0FDFA', borderColor: '#0D9488' }]}
+          style={[styles.gameCard, { backgroundColor: '#FFF7ED', borderColor: '#EA580C' }]}
           activeOpacity={0.85}
           onPress={() => fetchAndLaunchGame('wordAssociation')}
         >
           <View style={styles.gameCardHeader}>
-            <FontAwesome5 name="book-open" size={24} color="#0D9488" />
-            <View style={[styles.badgePill, { backgroundColor: '#CCFBF1' }]}>
-              <Text style={[styles.badgePillText, { color: '#0F766E' }]}>
-                {t.games.languageCategory}
-              </Text>
+            <FontAwesome5 name="book-reader" size={24} color="#EA580C" />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={[styles.badgePill, { backgroundColor: '#FFEDD5' }]}>
+                <Text style={[styles.badgePillText, { color: '#EA580C' }]}>
+                  {t.games.languageCategory}
+                </Text>
+              </View>
+              <SpeakerButton
+                text={`${t.games.game6Title}. ${t.games.game6Sub}`}
+                size="small"
+              />
             </View>
           </View>
           <Text style={styles.gameCardTitle}>{t.games.game6Title}</Text>

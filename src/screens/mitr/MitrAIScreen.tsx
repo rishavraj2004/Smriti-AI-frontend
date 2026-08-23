@@ -17,6 +17,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { getLanguageLabel } from '../../utils/formatters';
 import { chatApi, ChatMessage } from '../../api/chatApi';
 import { SpeakerButton } from '../../components/SpeakerButton';
+import { ttsService } from '../../services/ttsService';
 import { sttService } from '../../services/sttService';
 
 const QUICK_STARTERS: Record<string, string[]> = {
@@ -163,6 +164,11 @@ export const MitrAIScreen: React.FC = () => {
 
       setMessages((prev) => [...prev, assistantMessage]);
       scrollToBottom();
+
+      // Automatically voice the Mitr AI response
+      if (response.reply) {
+        ttsService.speak(response.reply, response.language || activeLang);
+      }
     } catch (err: any) {
       const fallbackReply: ChatMessage = {
         id: `err-${Date.now()}`,
@@ -178,6 +184,9 @@ export const MitrAIScreen: React.FC = () => {
       };
       setMessages((prev) => [...prev, fallbackReply]);
       scrollToBottom();
+
+      // Automatically voice fallback reply
+      ttsService.speak(fallbackReply.text, activeLang);
     } finally {
       setIsSending(false);
     }
@@ -314,14 +323,14 @@ export const MitrAIScreen: React.FC = () => {
                     </Text>
 
                     <View style={styles.bubbleFooter}>
-                      {!isUser && (
-                        <SpeakerButton
-                          text={msg.text}
-                          language={msg.language || activeLang}
-                          size="small"
-                          style={{ marginRight: 6 }}
-                        />
-                      )}
+                      <SpeakerButton
+                        text={msg.text}
+                        language={msg.language || activeLang}
+                        size="small"
+                        style={{ marginRight: 6 }}
+                        backgroundColor={isUser ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.05)'}
+                        color={isUser ? '#FFFFFF' : COLORS.primary}
+                      />
                       <Text
                         style={[
                           styles.timestampText,
@@ -356,7 +365,14 @@ export const MitrAIScreen: React.FC = () => {
 
         {/* Quick Starters Carousel / Suggestions */}
         <View style={styles.startersSection}>
-          <Text style={styles.startersTitle}>✨ Suggested Topics:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 6 }}>
+            <Text style={styles.startersTitle}>✨ Suggested Topics:</Text>
+            <SpeakerButton
+              text={`Suggested topics for conversation: ${currentStarters.join('. ')}`}
+              language={activeLang}
+              size="small"
+            />
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -601,8 +617,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: COLORS.textSecondary,
     textTransform: 'uppercase',
-    paddingHorizontal: 16,
-    marginBottom: 6,
     letterSpacing: 0.5,
   },
   startersScroll: {

@@ -17,6 +17,7 @@ import { ElderlyButton } from '../../components/ElderlyButton';
 import { SUPPORTED_LANGUAGES } from '../../utils/validation';
 import { getLanguageLabel } from '../../utils/formatters';
 import { SupportedLanguage } from '../../types/auth';
+import { SpeakerButton } from '../../components/SpeakerButton';
 
 export const ProfileScreen: React.FC = () => {
   const { patient, logout, setLanguage } = useAuth();
@@ -63,8 +64,16 @@ export const ProfileScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.container}>
         {/* Profile Header */}
         <View style={styles.profileCard}>
-          <View style={styles.avatarCircle}>
-            <Text style={styles.avatarText}>👤</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+            <View style={styles.avatarCircle}>
+              <Text style={styles.avatarText}>👤</Text>
+            </View>
+            <SpeakerButton
+              text={`Patient Profile. ${patient?.name || t.profile.title}. Age ${patient?.age || 'not set'}. Region: ${patient?.region || 'North Eastern Region'}.`}
+              size="small"
+              backgroundColor="rgba(255, 255, 255, 0.15)"
+              color="#FFFFFF"
+            />
           </View>
           <Text style={styles.name}>{patient?.name || t.profile.title}</Text>
           <Text style={styles.detail}>
@@ -75,7 +84,13 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Caregiver Pairing Code Section */}
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>{t.profile.caregiverPairingTitle}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+            <Text style={styles.sectionTitle}>{t.profile.caregiverPairingTitle}</Text>
+            <SpeakerButton
+              text={`${t.profile.caregiverPairingTitle}. ${t.profile.caregiverPairingSub}. Your pairing code is ${pairingCode}.`}
+              size="small"
+            />
+          </View>
           <Text style={styles.sectionSub}>{t.profile.caregiverPairingSub}</Text>
 
           <View style={styles.codeBox}>
@@ -102,11 +117,23 @@ export const ProfileScreen: React.FC = () => {
             <Text style={styles.sosTitle}>{t.profile.emergencySosTitle}</Text>
             <Text style={styles.sosSub}>{t.profile.emergencySosSub}</Text>
           </View>
+          <SpeakerButton
+            text={`${t.profile.emergencySosTitle}. ${t.profile.emergencySosSub}`}
+            size="small"
+            backgroundColor="rgba(255, 255, 255, 0.2)"
+            color="#FFFFFF"
+          />
         </TouchableOpacity>
 
         {/* Regional Language Selection */}
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>{t.profile.regionalLangTitle}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+            <Text style={styles.sectionTitle}>{t.profile.regionalLangTitle}</Text>
+            <SpeakerButton
+              text={`${t.profile.regionalLangTitle}. Active language: ${languageLabel}.`}
+              size="small"
+            />
+          </View>
           <Text style={styles.sectionSub}>Active: {languageLabel}</Text>
 
           <View style={styles.langList}>
@@ -133,7 +160,13 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Accessibility & Preferences */}
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>{t.profile.accessibilityTitle}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <Text style={styles.sectionTitle}>{t.profile.accessibilityTitle}</Text>
+            <SpeakerButton
+              text={`${t.profile.accessibilityTitle}. ${t.profile.largeFont}, ${t.profile.voiceAudio}, ${t.profile.highContrast}`}
+              size="small"
+            />
+          </View>
 
           <View style={styles.settingRow}>
             <Text style={styles.settingLabel}>{t.profile.largeFont}</Text>
