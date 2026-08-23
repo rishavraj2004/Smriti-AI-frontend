@@ -1,6 +1,6 @@
 export type AuthScreenType = 'welcome' | 'login' | 'signup' | 'pairing-code' | 'caregiver';
 
-export type MainTabType = 'home' | 'games' | 'mitr' | 'dashboard' | 'profile';
+export type MainTabType = 'home' | 'scrapbook' | 'games' | 'mitr' | 'dashboard' | 'profile';
 
 export type GameViewType =
   | 'list'

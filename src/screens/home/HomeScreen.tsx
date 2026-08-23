@@ -15,7 +15,7 @@ interface HomeScreenProps {
   onLaunchGame: (game: GameViewType) => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateTab, onLaunchGame }) => {
   const { patient, appLanguage } = useAuth();
   const { totalGamesPlayedToday, averageScore } = useGameStats();
   const { t } = useTranslation();
@@ -156,6 +156,38 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
           })}
         </View>
       </View>
+
+      {/* FAMILY SCRAPBOOK FEATURED CARD */}
+      <TouchableOpacity
+        style={styles.scrapbookHeroCard}
+        activeOpacity={0.88}
+        onPress={() => onNavigateTab('scrapbook')}
+      >
+        <View style={styles.scrapbookTopRow}>
+          <View style={styles.scrapbookBadge}>
+            <Text style={styles.scrapbookBadgeText}>📖 FAMILY MEMORIES</Text>
+          </View>
+          <SpeakerButton
+            text="Family Scrapbook. Browse treasured family photos, listen to recorded voice stories, and watch photo slideshows."
+            language={activeLang}
+            size="small"
+            backgroundColor="rgba(255, 255, 255, 0.2)"
+            color="#FFFFFF"
+          />
+        </View>
+
+        <Text style={styles.scrapbookHeroTitle}>Family Scrapbook Album</Text>
+        <Text style={styles.scrapbookHeroSub}>
+          Photos, cherished family stories, and spoken voice recordings to comfort and strengthen memory.
+        </Text>
+
+        <View style={styles.scrapbookActionRow}>
+          <View style={styles.scrapbookOpenBtn}>
+            <Text style={styles.scrapbookOpenBtnText}>Open Scrapbook Album</Text>
+            <Ionicons name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 6 }} />
+          </View>
+        </View>
+      </TouchableOpacity>
 
       {/* Featured Cognitive Exercises */}
       <View style={styles.sectionHeader}>
@@ -514,5 +546,58 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     marginTop: 2,
     fontWeight: '600',
+  },
+  scrapbookHeroCard: {
+    backgroundColor: '#0F766E',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 20,
+    ...SHADOWS.card,
+  },
+  scrapbookTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  scrapbookBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  scrapbookBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  scrapbookHeroTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  scrapbookHeroSub: {
+    fontSize: 13,
+    color: '#CCFBF1',
+    lineHeight: 18,
+    marginBottom: 16,
+  },
+  scrapbookActionRow: {
+    flexDirection: 'row',
+  },
+  scrapbookOpenBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+  },
+  scrapbookOpenBtnText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800',
   },
 });

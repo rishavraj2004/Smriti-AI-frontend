@@ -18,6 +18,7 @@ import { CaregiverPortalScreen } from './src/screens/caregiver/CaregiverPortalSc
 import { CaregiverDashboardScreen } from './src/screens/caregiver/CaregiverDashboardScreen';
 
 import { HomeScreen } from './src/screens/home/HomeScreen';
+import { FamilyScrapbookScreen } from './src/screens/scrapbook/FamilyScrapbookScreen';
 import { GamesScreen } from './src/screens/games/GamesScreen';
 import { MitrAIScreen } from './src/screens/mitr/MitrAIScreen';
 import { DashboardScreen } from './src/screens/dashboard/DashboardScreen';
@@ -39,6 +40,8 @@ const AuthenticatedPatientApp: React.FC = () => {
     switch (currentTab) {
       case 'home':
         return <HomeScreen onNavigateTab={setCurrentTab} onLaunchGame={handleLaunchGame} />;
+      case 'scrapbook':
+        return <FamilyScrapbookScreen />;
       case 'games':
         return (
           <GamesScreen

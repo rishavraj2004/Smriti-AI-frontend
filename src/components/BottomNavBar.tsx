@@ -58,6 +58,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ currentTab, onSelect
 
   const tabs: TabConfig[] = [
     { id: 'home', label: t.nav.home, activeIcon: 'home', inactiveIcon: 'home-outline' },
+    { id: 'scrapbook', label: (t.nav as any).scrapbook || 'Album', activeIcon: 'book', inactiveIcon: 'book-outline' },
     { id: 'games', label: t.nav.games, activeIcon: 'game-controller', inactiveIcon: 'game-controller-outline' },
     { id: 'mitr', label: t.nav.mitr, activeIcon: 'chatbubbles', inactiveIcon: 'chatbubbles-outline' },
     { id: 'dashboard', label: t.nav.dashboard, activeIcon: 'stats-chart', inactiveIcon: 'stats-chart-outline' },

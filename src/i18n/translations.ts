@@ -3,6 +3,7 @@ import { SupportedLanguage } from '../types/auth';
 export interface TranslationDictionary {
   nav: {
     home: string;
+    scrapbook: string;
     games: string;
     mitr: string;
     dashboard: string;
@@ -195,6 +196,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   en: {
     nav: {
       home: 'Home',
+      scrapbook: 'Album',
       games: 'Games',
       mitr: 'Mitr AI',
       dashboard: 'Dashboard',
@@ -386,6 +388,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   as: {
     nav: {
       home: 'গৃহ',
+      scrapbook: 'এলবাম',
       games: 'খেল',
       mitr: 'মিত্ৰ AI',
       dashboard: 'প্ৰতিবেদন',
@@ -577,6 +580,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   hi: {
     nav: {
       home: 'होम',
+      scrapbook: 'एल्बम',
       games: 'खेल',
       mitr: 'मित्र AI',
       dashboard: 'डैशबोर्ड',
@@ -768,6 +772,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   bn: {
     nav: {
       home: 'হোম',
+      scrapbook: 'অ্যালবাম',
       games: 'খেলা',
       mitr: 'মিত্র AI',
       dashboard: 'ড্যাশবোর্ড',
@@ -959,6 +964,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   mn: {
     nav: {
       home: 'য়ুম',
+      scrapbook: 'এলবাম',
       games: 'শন্নবশিং',
       mitr: 'মিত্র AI',
       dashboard: 'ড্যাশবোর্ড',
@@ -1150,6 +1156,7 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   mz: {
     nav: {
       home: 'In',
+      scrapbook: 'Album',
       games: 'Inbualte',
       mitr: 'Mitr AI',
       dashboard: 'Dashboard',
