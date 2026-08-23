@@ -7,6 +7,7 @@ import { useGameStats } from '../../context/GameStatsContext';
 import { useTranslation } from '../../hooks/useTranslation';
 import { getFormattedDate } from '../../utils/formatters';
 import { MainTabType, GameViewType } from '../../types/navigation';
+import { SpeakerButton } from '../../components/SpeakerButton';
 
 interface HomeScreenProps {
   onNavigateTab: (tab: MainTabType) => void;
@@ -39,6 +40,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
   const patientName = patient?.name || 'Friend';
   const patientRegion = patient?.region || 'North Eastern Region';
 
+  const fullGreetingSpeech = `${greetingText}, ${patientName}. ${formattedDate}`;
+
   const moods = [
     { id: 'peaceful', emoji: '🌸', label: t.home.peaceful },
     { id: 'happy', emoji: '😊', label: t.home.cheerful },
@@ -67,9 +70,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
       <View style={styles.greetingCard}>
         <View style={styles.greetingHeader}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.greetingTitle}>
-              {greetingText}, {patientName}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={styles.greetingTitle}>
+                {greetingText}, {patientName}
+              </Text>
+              <SpeakerButton text={fullGreetingSpeech} size="medium" />
+            </View>
             <Text style={styles.regionSub}>📍 {patientRegion}</Text>
             <Text style={styles.dateSub}>📅 {formattedDate}</Text>
           </View>
@@ -93,7 +99,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
 
       {/* Daily Mood Check-In */}
       <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>{t.home.feelingTitle}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+          <Text style={styles.sectionTitle}>{t.home.feelingTitle}</Text>
+          <SpeakerButton text={`${t.home.feelingTitle}. ${t.home.feelingSub}`} size="small" />
+        </View>
         <Text style={styles.sectionSub}>{t.home.feelingSub}</Text>
 
         <View style={styles.moodGrid}>
@@ -118,8 +127,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onLaunchGame }) => {
 
       {/* Featured Cognitive Exercises */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionMainTitle}>{t.home.recommendedExercises}</Text>
-        <Text style={styles.sectionSubText}>{t.home.tapToStart}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.sectionMainTitle}>{t.home.recommendedExercises}</Text>
+          <Text style={styles.sectionSubText}>{t.home.tapToStart}</Text>
+        </View>
+        <SpeakerButton text={`${t.home.recommendedExercises}. ${t.home.tapToStart}`} size="small" />
       </View>
 
       <View style={styles.gamesGrid}>

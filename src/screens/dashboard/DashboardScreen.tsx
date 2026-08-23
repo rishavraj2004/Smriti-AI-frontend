@@ -18,6 +18,7 @@ import { ElderlyButton } from '../../components/ElderlyButton';
 import { MainTabType } from '../../types/navigation';
 import { gamesApi } from '../../api/gamesApi';
 import { CaregiverPerformanceData, GameResult } from '../../types/games';
+import { SpeakerButton } from '../../components/SpeakerButton';
 
 interface DashboardScreenProps {
   onNavigateTab: (tab: MainTabType) => void;
@@ -290,9 +291,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       <View style={styles.headerCard}>
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>
-              {isCaregiverView ? 'Caregiver Clinical Overview' : t.dashboard.title}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 8 }}>
+              <Text style={styles.headerTitle}>
+                {isCaregiverView ? 'Caregiver Clinical Overview' : t.dashboard.title}
+              </Text>
+              <SpeakerButton
+                text={`${isCaregiverView ? 'Caregiver Clinical Overview' : t.dashboard.title}. ${t.dashboard.patient}: ${activePatientName}. ${t.dashboard.gamesPlayedToday}: ${activeTotalGames}. ${t.dashboard.averageScore}: ${activeAverageScore !== null ? activeAverageScore + '%' : 'no data'}.`}
+                size="small"
+              />
+            </View>
             <Text style={styles.patientSub}>
               {t.dashboard.patient}: {activePatientName}
             </Text>

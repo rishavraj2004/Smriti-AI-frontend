@@ -10,12 +10,14 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../../theme/theme';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../hooks/useTranslation';
 import { getLanguageLabel } from '../../utils/formatters';
 import { chatApi, ChatMessage } from '../../api/chatApi';
+import { SpeakerButton } from '../../components/SpeakerButton';
+import { sttService } from '../../services/sttService';
 
 const QUICK_STARTERS: Record<string, string[]> = {
   as: [
@@ -62,6 +64,7 @@ export const MitrAIScreen: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -154,7 +157,7 @@ export const MitrAIScreen: React.FC = () => {
         id: response.id || `bot-${Date.now()}`,
         sender: 'assistant',
         text: response.reply,
-        language: response.language,
+        language: response.language || activeLang,
         createdAt: response.createdAt || new Date(),
       };
 
@@ -180,6 +183,35 @@ export const MitrAIScreen: React.FC = () => {
     }
   };
 
+  const toggleVoiceInput = () => {
+    if (isListening) {
+      sttService.stopListening();
+      setIsListening(false);
+      return;
+    }
+
+    if (!sttService.isSupported()) {
+      alert('Voice dictation is active on Google Chrome, Edge, and mobile speech keyboards.');
+      return;
+    }
+
+    setIsListening(true);
+    sttService.startListening(
+      activeLang,
+      (transcript) => {
+        setIsListening(false);
+        setInputText(transcript);
+        handleSendMessage(transcript);
+      },
+      () => {
+        setIsListening(false);
+      },
+      () => {
+        setIsListening(false);
+      }
+    );
+  };
+
   const handleClearHistory = async () => {
     try {
       await chatApi.clearHistory();
@@ -190,6 +222,8 @@ export const MitrAIScreen: React.FC = () => {
   };
 
   const currentStarters = QUICK_STARTERS[activeLang] || QUICK_STARTERS.en;
+
+  const headerSpeechText = `Mitr AI Companion. Active in ${currentLangLabel}. How can I assist you today?`;
 
   return (
     <KeyboardAvoidingView
@@ -216,14 +250,23 @@ export const MitrAIScreen: React.FC = () => {
             </View>
           </View>
 
-          <TouchableOpacity
-            style={styles.clearBtn}
-            onPress={handleClearHistory}
-            activeOpacity={0.7}
-            title="Clear Chat"
-          >
-            <Ionicons name="trash-outline" size={20} color="#CBD5E1" />
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <SpeakerButton
+              text={headerSpeechText}
+              language={activeLang}
+              size="small"
+              backgroundColor="rgba(255, 255, 255, 0.15)"
+              color="#FFFFFF"
+            />
+            <TouchableOpacity
+              style={styles.clearBtn}
+              onPress={handleClearHistory}
+              activeOpacity={0.7}
+              title="Clear Chat"
+            >
+              <Ionicons name="trash-outline" size={18} color="#CBD5E1" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Chat Stream */}
@@ -271,6 +314,14 @@ export const MitrAIScreen: React.FC = () => {
                     </Text>
 
                     <View style={styles.bubbleFooter}>
+                      {!isUser && (
+                        <SpeakerButton
+                          text={msg.text}
+                          language={msg.language || activeLang}
+                          size="small"
+                          style={{ marginRight: 6 }}
+                        />
+                      )}
                       <Text
                         style={[
                           styles.timestampText,
@@ -326,10 +377,28 @@ export const MitrAIScreen: React.FC = () => {
 
         {/* Input Bar */}
         <View style={styles.inputContainer}>
+          {/* Voice Microphone Button */}
+          <TouchableOpacity
+            style={[styles.micButton, isListening && styles.micButtonActive]}
+            onPress={toggleVoiceInput}
+            activeOpacity={0.8}
+            title="Speak into microphone"
+          >
+            <Ionicons
+              name={isListening ? 'mic' : 'mic-outline'}
+              size={22}
+              color={isListening ? '#FFFFFF' : COLORS.primary}
+            />
+          </TouchableOpacity>
+
           <TextInput
             style={styles.input}
-            placeholder={`Talk to Mitr in ${currentLangLabel}...`}
-            placeholderTextColor="#94A3B8"
+            placeholder={
+              isListening
+                ? 'Listening to your voice...'
+                : `Talk to Mitr in ${currentLangLabel}...`
+            }
+            placeholderTextColor={isListening ? '#EF4444' : '#94A3B8'}
             value={inputText}
             onChangeText={setInputText}
             multiline
@@ -497,6 +566,7 @@ const styles = StyleSheet.create({
   bubbleFooter: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
     marginTop: 6,
   },
   timestampText: {
@@ -560,7 +630,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
-    gap: 10,
+    gap: 8,
+  },
+  micButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  micButtonActive: {
+    backgroundColor: '#EF4444',
+    borderColor: '#DC2626',
   },
   input: {
     flex: 1,

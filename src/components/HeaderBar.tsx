@@ -4,12 +4,17 @@ import { COLORS, SHADOWS } from '../theme/theme';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { ElderlyButton } from './ElderlyButton';
+import { SpeakerButton } from './SpeakerButton';
 
 export const HeaderBar: React.FC = () => {
   const { patient } = useAuth();
   const { t } = useTranslation();
   const [sosModalVisible, setSosModalVisible] = useState(false);
   const [sosSentModalVisible, setSosSentModalVisible] = useState(false);
+
+  const headerSpeechText = patient
+    ? `Smriti AI. ${t.home.goodMorning}, ${patient.name}.`
+    : 'Smriti AI Cognitive Care.';
 
   const handleTriggerSOS = () => {
     setSosModalVisible(false);
@@ -24,7 +29,7 @@ export const HeaderBar: React.FC = () => {
           <View style={styles.logoCircle}>
             <Text style={styles.logoEmoji}>🧠</Text>
           </View>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.brandTitle}>Smriti AI</Text>
             <Text style={styles.patientSubtitle} numberOfLines={1}>
               {patient ? `${t.home.goodMorning}, ${patient.name}` : 'Cognitive Care (NER)'}
@@ -32,8 +37,15 @@ export const HeaderBar: React.FC = () => {
           </View>
         </View>
 
-        {/* Right side: Online indicator & SOS Button */}
+        {/* Right side: Speaker, Online indicator & SOS Button */}
         <View style={styles.rightSection}>
+          <SpeakerButton
+            text={headerSpeechText}
+            size="small"
+            backgroundColor="rgba(255, 255, 255, 0.15)"
+            color="#FFFFFF"
+          />
+
           <View style={styles.statusPill}>
             <View style={styles.onlineDot} />
             <Text style={styles.statusText}>{t.nav.active}</Text>

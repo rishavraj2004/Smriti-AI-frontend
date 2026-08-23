@@ -12,6 +12,7 @@ import { MathMemoryGameScreen } from './MathMemoryGameScreen';
 import { ObjectRecognitionGameScreen } from './ObjectRecognitionGameScreen';
 import { RoutineRecallGameScreen } from './RoutineRecallGameScreen';
 import { WordAssociationGameScreen } from './WordAssociationGameScreen';
+import { SpeakerButton } from '../../components/SpeakerButton';
 
 interface GamesScreenProps {
   initialGame?: GameViewType;
@@ -99,8 +100,8 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={styles.loadingTitle}>Loading Adaptive Exercise...</Text>
-        <Text style={styles.loadingSub}>Personalizing difficulty & cultural content</Text>
+        <Text style={styles.loadingTitle}>Configuring Adaptive Exercise...</Text>
+        <Text style={styles.loadingSub}>Personalizing difficulty & cultural parameters</Text>
       </View>
     );
   }
@@ -164,8 +165,16 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
     <ScrollView contentContainerStyle={styles.container}>
       {/* Header Banner */}
       <View style={styles.headerBanner}>
-        <View style={styles.headerEmojiCircle}>
-          <Text style={styles.headerEmoji}>🎮</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <View style={styles.headerEmojiCircle}>
+            <Text style={styles.headerEmoji}>🎮</Text>
+          </View>
+          <SpeakerButton
+            text={`${t.games.hubTitle}. ${t.games.hubSub}`}
+            size="small"
+            backgroundColor="rgba(0, 0, 0, 0.05)"
+            color={COLORS.textDark}
+          />
         </View>
         <Text style={styles.headerTitle}>{t.games.hubTitle}</Text>
         <Text style={styles.headerSub}>{t.games.hubSub}</Text>
@@ -181,7 +190,15 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
           <View style={styles.heroBadge}>
             <Text style={styles.heroBadgeText}>⚡ AI ADAPTIVE</Text>
           </View>
-          <Text style={styles.heroLevelText}>Personalized Pacing</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text style={styles.heroLevelText}>Personalized Pacing</Text>
+            <SpeakerButton
+              text="Today's Recommended Exercise. Dynamically tailored to your cognitive comfort zone and recent sessions."
+              size="small"
+              backgroundColor="rgba(255, 255, 255, 0.15)"
+              color="#FFFFFF"
+            />
+          </View>
         </View>
 
         <Text style={styles.heroTitle}>Today's Recommended Exercise</Text>
