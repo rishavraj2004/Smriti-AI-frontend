@@ -171,6 +171,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
           </View>
           <SpeakerButton
             text={`${t.games.hubTitle}. ${t.games.hubSub}`}
+            language={language}
             size="small"
             backgroundColor="rgba(0, 0, 0, 0.05)"
             color={COLORS.textDark}
@@ -180,7 +181,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         <Text style={styles.headerSub}>{t.games.hubSub}</Text>
       </View>
 
-      {/* Hero: Today's Adaptive Daily Exercise */}
+      {/* Hero: Today's Adaptive Daily Exercise (Start Session) */}
       <TouchableOpacity
         style={styles.heroAdaptiveCard}
         activeOpacity={0.88}
@@ -188,12 +189,13 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
       >
         <View style={styles.heroTopRow}>
           <View style={styles.heroBadge}>
-            <Text style={styles.heroBadgeText}>⚡ AI ADAPTIVE</Text>
+            <Text style={styles.heroBadgeText}>{t.games.adaptiveBadge}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Text style={styles.heroLevelText}>Personalized Pacing</Text>
+            <Text style={styles.heroLevelText}>{t.games.personalizedPacing}</Text>
             <SpeakerButton
-              text="Today's Recommended Exercise. Dynamically tailored to your cognitive comfort zone and recent sessions."
+              text={`${t.games.heroExerciseTitle}. ${t.games.heroExerciseDesc}`}
+              language={language}
               size="small"
               backgroundColor="rgba(255, 255, 255, 0.15)"
               color="#FFFFFF"
@@ -201,17 +203,15 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
           </View>
         </View>
 
-        <Text style={styles.heroTitle}>Today's Recommended Exercise</Text>
-        <Text style={styles.heroDesc}>
-          Dynamically tailored to your cognitive comfort zone and recent sessions.
-        </Text>
+        <Text style={styles.heroTitle}>{t.games.heroExerciseTitle}</Text>
+        <Text style={styles.heroDesc}>{t.games.heroExerciseDesc}</Text>
         <View style={styles.heroPlayButton}>
-          <Text style={styles.heroPlayButtonText}>Start Today's Session</Text>
+          <Text style={styles.heroPlayButtonText}>{t.games.startSessionBtn}</Text>
           <Ionicons name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 6 }} />
         </View>
       </TouchableOpacity>
 
-      <Text style={styles.categoriesHeader}>All Cognitive Domains</Text>
+      <Text style={styles.categoriesHeader}>{t.games.allDomainsHeader}</Text>
 
       <View style={styles.gamesList}>
         {/* Game 1: Memory */}
@@ -228,6 +228,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
               </View>
               <SpeakerButton
                 text={`${t.games.game1Title}. ${t.games.game1Sub}`}
+                language={language}
                 size="small"
               />
             </View>
@@ -252,6 +253,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
               </View>
               <SpeakerButton
                 text={`${t.games.game2Title}. ${t.games.game2Sub}`}
+                language={language}
                 size="small"
               />
             </View>
@@ -276,6 +278,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
               </View>
               <SpeakerButton
                 text={`${t.games.game3Title}. ${t.games.game3Sub}`}
+                language={language}
                 size="small"
               />
             </View>
@@ -300,6 +303,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
               </View>
               <SpeakerButton
                 text={`${t.games.game4Title}. ${t.games.game4Sub}`}
+                language={language}
                 size="small"
               />
             </View>
@@ -324,6 +328,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
               </View>
               <SpeakerButton
                 text={`${t.games.game5Title}. ${t.games.game5Sub}`}
+                language={language}
                 size="small"
               />
             </View>
@@ -348,6 +353,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
               </View>
               <SpeakerButton
                 text={`${t.games.game6Title}. ${t.games.game6Sub}`}
+                language={language}
                 size="small"
               />
             </View>

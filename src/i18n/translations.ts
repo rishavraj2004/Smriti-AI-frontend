@@ -94,6 +94,12 @@ export interface TranslationDictionary {
     selectMatchingPhrase: string;
     wordFinishTitle: string;
     wordFinishSub: string;
+    adaptiveBadge: string;
+    personalizedPacing: string;
+    heroExerciseTitle: string;
+    heroExerciseDesc: string;
+    startSessionBtn: string;
+    allDomainsHeader: string;
   };
   mitr: {
     title: string;
@@ -280,6 +286,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
       selectMatchingPhrase: '[ Select matching phrase below ]',
       wordFinishTitle: 'Wonderful Word Memory',
       wordFinishSub: 'You completed all regional phrases and folklore associations!',
+      adaptiveBadge: '⚡ AI ADAPTIVE',
+      personalizedPacing: 'Personalized Pacing',
+      heroExerciseTitle: "Today's Recommended Exercise",
+      heroExerciseDesc: 'Dynamically tailored to your cognitive comfort zone and recent sessions.',
+      startSessionBtn: "Start Today's Session",
+      allDomainsHeader: 'All Cognitive Domains',
     },
     mitr: {
       title: 'Smriti Mitr (স্মৃতি মিত্ৰ)',
@@ -465,6 +477,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
       selectMatchingPhrase: '[ তলৰ পৰা সঠিক শব্দ বাছক ]',
       wordFinishTitle: 'চমৎকাৰ শব্দ স্মৃতি',
       wordFinishSub: 'আপুনি সকলো আঞ্চলিক বাক্য আৰু প্ৰবচন শুদ্ধকৈ সম্পূৰ্ণ কৰিলে!',
+      adaptiveBadge: '⚡ এআই অভিযোজিত',
+      personalizedPacing: 'ব্যক্তিগত গতি',
+      heroExerciseTitle: 'আজিৰ বাবে পৰামৰ্শ দিয়া অনুশীলন',
+      heroExerciseDesc: 'আপোনাৰ মানসিক সুবিধা আৰু শেহতীয়া খেলৰ ওপৰত ভিত্তি কৰি প্ৰস্তুত কৰা।',
+      startSessionBtn: 'আজিৰ খেল আৰম্ভ কৰক',
+      allDomainsHeader: 'সকলো বৌদ্ধিক শাখা',
     },
     mitr: {
       title: 'স্মৃতি মিত্ৰ (Smriti Mitr)',
@@ -650,6 +668,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
       selectMatchingPhrase: '[ नीचे से सही शब्द चुनें ]',
       wordFinishTitle: 'उत्कृष्ट शब्द स्मृति',
       wordFinishSub: 'आपने सभी क्षेत्रीय वाक्यों को सही पूरा किया!',
+      adaptiveBadge: '⚡ एआई अनुकूली',
+      personalizedPacing: 'व्यक्तिगत गति',
+      heroExerciseTitle: 'आज का अनुशंसित अभ्यास',
+      heroExerciseDesc: 'आपकी मानसिक क्षमता और हालिया सत्रों के अनुसार विशेष रूप से तैयार किया गया।',
+      startSessionBtn: 'आज का सत्र शुरू करें',
+      allDomainsHeader: 'सभी संज्ञानात्मक श्रेणियां',
     },
     mitr: {
       title: 'स्मृति मित्र (Smriti Mitr)',
@@ -835,6 +859,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
       selectMatchingPhrase: '[ নিচে থেকে সঠিক শব্দ বাছুন ]',
       wordFinishTitle: 'চমৎকার শব্দ স্মৃতি',
       wordFinishSub: 'আপনি সমস্ত আঞ্চলিক বাক্য সঠিকভাবে সম্পূর্ণ করেছেন!',
+      adaptiveBadge: '⚡ এআই অভিযোজিত',
+      personalizedPacing: 'ব্যক্তিগত গতি',
+      heroExerciseTitle: 'আজকের প্রস্তাবিত অনুশীলন',
+      heroExerciseDesc: 'আপনার মানসিক স্বাচ্ছন্দ্য এবং সাম্প্রতিক সেশনের সাথে সামঞ্জস্য রেখে তৈরি।',
+      startSessionBtn: 'আজকের সেশন শুরু করুন',
+      allDomainsHeader: 'সমস্ত মানসিক ডোমেন',
     },
     mitr: {
       title: 'স্মৃতি মিত্র (Smriti Mitr)',
@@ -1020,6 +1050,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
       selectMatchingPhrase: '[ মখাদগী চুম্বা ৱাহৈ খনবিয়ু ]',
       wordFinishTitle: 'য়াম্না ফবা ৱাহৈ নীংশিংবা',
       wordFinishSub: 'অদোম্না ৱাহৈ পরেং খুদিংমক চুম্না লোইশিন্লে!',
+      adaptiveBadge: '⚡ AI ADAPTIVE',
+      personalizedPacing: 'Personalized Pacing',
+      heroExerciseTitle: 'ঙসিগী ওইবা খন্দোক্লবা এক্সরসাইজ',
+      heroExerciseDesc: 'নহাক্কী হকচাং অমসুং ৱাখলগী ফিভমদা য়ুম্ফম ওইরগা শেম্বা।',
+      startSessionBtn: 'ঙসিগী সেসন হৌদোকউ',
+      allDomainsHeader: 'লৌশিংগী কাংলুপ খুদিংমক',
     },
     mitr: {
       title: 'স্মৃতি মিত্র (Smriti Mitr)',
@@ -1205,6 +1241,12 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
       selectMatchingPhrase: '[ A hnuaia thu mil hi thlang rawh ]',
       wordFinishTitle: 'Thu Hriatrengna Tha',
       wordFinishSub: 'Thu zawng zawng i zawm dik vek e!',
+      adaptiveBadge: '⚡ AI ADAPTIVE',
+      personalizedPacing: 'Mahni Tawk Te',
+      heroExerciseTitle: 'Vawiin Tana Exercise Rawttu',
+      heroExerciseDesc: 'I theihna leh i tlin tawk mila buatsaih bik a ni.',
+      startSessionBtn: 'Vawiin Session Tan Rawh',
+      allDomainsHeader: 'Thluak Sawizawina Kawng Hrang Hrang',
     },
     mitr: {
       title: 'Smriti Mitr (Thian Tha)',
