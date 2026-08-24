@@ -25,6 +25,9 @@
   },
   "scripts": {
     "start": "expo start",
+    "tunnel": "node scripts/tunnel.js",
+    "tunnel:expo": "expo start --tunnel -c",
+    "tunnel:backend": "npx --yes localtunnel --port 3000",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"

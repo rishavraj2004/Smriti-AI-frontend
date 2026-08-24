@@ -22,10 +22,11 @@ const BASE_URL = resolveBaseUrl();
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 12000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    'Bypass-Tunnel-Reminder': 'true',
   },
 });
 
