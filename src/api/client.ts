@@ -27,8 +27,6 @@ export const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    'Bypass-Tunnel-Reminder': 'true',
-    'bypass-tunnel-reminder': 'true',
   },
 });
 
@@ -41,9 +39,10 @@ apiClient.interceptors.request.use(
         config.baseURL = activeBase;
       }
 
-      // Ensure bypass tunnel header
-      config.headers['Bypass-Tunnel-Reminder'] = 'true';
-      config.headers['bypass-tunnel-reminder'] = 'true';
+      // Only attach bypass header if connecting to a localtunnel domain
+      if (config.baseURL && config.baseURL.includes('loca.lt')) {
+        config.headers['Bypass-Tunnel-Reminder'] = 'true';
+      }
 
       // Attach auth token if available
       if (!config.headers.Authorization) {
