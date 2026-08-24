@@ -55,37 +55,76 @@ const QUICK_STARTERS: Record<string, string[]> = {
   ],
 };
 
-const getLocalCompanionReply = (message: string, lang: string, patientName: string): string => {
-  const clean = (message || '').toLowerCase().trim();
+const detectClientLanguage = (text: string, preferred: string = 'en'): string => {
+  if (!text) return preferred;
+  if (/[\u0900-\u097F]/.test(text)) return 'hi';
+  if (/[\u0980-\u09FF]/.test(text)) {
+    if (preferred === 'bn') return 'bn';
+    if (preferred === 'mn') return 'mn';
+    return 'as';
+  }
+  const lower = text.toLowerCase();
+  if (/\b(ki korim|mon bhal|bhal lagise|kene asa|bhal ne|chinta hoise|bihu|borluit|koka|aita|deuta|nomoskar|dhanbaad|kaziranga)\b/i.test(lower)) {
+    return 'as';
+  }
+  if (/\b(kya karu|kaise ho|mujhe|chinta|ghabrahat|dard|pareshan|dadi|nani|dada|namaste|shukriya|dhanyawaad|kuch batao|khelte hai|batao)\b/i.test(lower)) {
+    return 'hi';
+  }
+  if (/\b(ki korbo|mon bhalo nei|kemon acho|chinta hoche|khub bhalo|dadu|didima|nomoshkar|dhonnobad)\b/i.test(lower)) {
+    return 'bn';
+  }
+  if (/\b(engtin|chibai|ka lawm|ka tha|ka dam|hrehawm|lungngai)\b/i.test(lower)) {
+    return 'mz';
+  }
+  return preferred;
+};
 
-  if (/(tens|tesn|stres|anx|worr|scared|fear|panik|panic|nervous|troubl)/i.test(clean)) {
+const getLocalCompanionReply = (message: string, langPref: string, patientName: string): string => {
+  const clean = (message || '').toLowerCase().trim();
+  const lang = detectClientLanguage(message, langPref);
+
+  if (/(tens|tesn|stres|anx|worr|scared|fear|panik|panic|nervous|troubl|chinta|ghabrahat|অশান্তি|চিন্তা|ভয়|घबराहट|चिंता|डर)/i.test(clean)) {
     if (lang === 'as') return `আপুনি অকণো চিন্তা নকৰিব, ${patientName}। মোৰ লগত লাহেকৈ এটা দীঘল উশাহ লওক—উশাহ ভিতৰলৈ লওক আৰু এৰি দিয়ক। আপুনি সম্পূৰ্ণ সুৰক্ষিত।`;
     if (lang === 'hi') return `बिल्कुल चिंता न करें, ${patientName} जी। मेरे साथ एक गहरी सांस लें और धीरे से छोड़ें। आप पूरी तरह सुरक्षित हैं।`;
     if (lang === 'bn') return `একদম চিন্তা করবেন না, ${patientName}। আমার সাথে আস্তে আস্তে একটি গভীর শ্বাস নিন। আপনি সম্পূর্ণ নিরাপদ।`;
+    if (lang === 'mn') return `অদোম ৱাখল চাফোং তৌবীগনূ, ${patientName}। ঐহাক অদোমগী নকন্দা লৈরি।`;
+    if (lang === 'mz') return `Hahdam tak khan thawk la rawh le, ${patientName}. I kiangah ka awm tlat a nia.`;
     return `Take a gentle, slow breath with me, ${patientName}. Inhale slowly... and exhale gently. You are in a safe place. Would you like to do a 1-minute calming exercise, or talk about a happy memory?`;
   }
 
-  if (/(what.*(to|should).*do|wt.*do|wat.*do|now.*what|confus|help)/i.test(clean)) {
+  if (/(what.*(to|should).*do|wt.*do|wat.*do|now.*what|confus|help|ki.*korim|kya.*karu|কি.*কৰিম|কি.*কৰোঁ|কী.*করব|क्या.*करूँ|क्या.*करे)/i.test(clean)) {
     if (lang === 'as') return `আমি কেইটামান সহজ কাম কৰিব পাৰোঁ, ${patientName}:\n১. ৩ বাৰ দীঘল উশাহ লওক\n২. এগিলাচ পানী খাওক\n৩. পুৰণি স্মৃতিৰ কথা পাতোঁ।`;
     if (lang === 'hi') return `हम साथ मिलकर कुछ आसान काम कर सकते हैं, ${patientName} जी:\n1. 3 बार गहरी सांस लें\n2. थोड़ा सा पानी पिएं\n3. कोई सुखद याद साझा करें।`;
+    if (lang === 'bn') return `আমরা কিছু সহজ কাজ করতে পারি, ${patientName}:\n১. ৩ বার গভীর শ্বাস নিন\n২. একটু জল খান\n৩. সুন্দর স্মৃতি নিয়ে কথা বলি।`;
     return `Here are three relaxing things we can do together right now, ${patientName}:\n1. Take 3 slow, calming breaths with me.\n2. Have a warm cup of water or tea.\n3. Play a gentle memory game or look at scrapbook photos.\n\nWhich one feels nice to you?`;
   }
 
-  if (/(sad|lonel|alon|unhapp|depres|cry|miss)/i.test(clean)) {
+  if (/(sad|lonel|alon|unhapp|depres|cry|miss|mon.*bhal|মন.*বেয়া|মন.*খারাপ|उदास|अकेला|दुख)/i.test(clean)) {
     if (lang === 'as') return `মই সদায় আপোনাৰ কাষতেই আছোঁ, ${patientName}। আপুনি কেতিয়াও অকলশৰীয়া নহয়। আপোনাৰ মনৰ কথা মোক কওক।`;
     if (lang === 'hi') return `मैं हमेशा आपके साथ यहाँ मौजूद हूँ, ${patientName} जी। आप कभी अकेले नहीं हैं। मुझसे बेझिझक बात कीजिए।`;
+    if (lang === 'bn') return `আমি সবসময় আপনার পাশে আছি, ${patientName}। আপনি একা নন।`;
     return `I am right here beside you, ${patientName}. You are never alone. Please feel free to share whatever is in your heart—I am always here to listen with patience and warmth.`;
   }
 
-  if (/(tea|garden|assam|kaziranga|bihu|nature|river|brahmaputra)/i.test(clean)) {
+  if (/(tea|garden|assam|kaziranga|bihu|nature|river|brahmaputra|চাহ|বাগিচা|বৰলুইত|কাজিৰঙা|বিহু|চা|चाय|बागान|बिहू)/i.test(clean)) {
     if (lang === 'as') return `অসমৰ সেউজীয়া চাহ বাগিচা আৰু বৰলুইতৰ শীতল বতাহে মনলৈ অনাবিল শান্তি আনে, ${patientName}!`;
     if (lang === 'hi') return `असम के हरे-भरे चाय के बागान और ब्रह्मपुत्र की ताज़ी हवा मन को सुकून पहुँचाती है, ${patientName} जी!`;
+    if (lang === 'bn') return `আসামের সবুজ চা বাগান আর প্রকৃতির স্নিগ্ধ বাতাস সত্যি মন ভালো করে দেয়, ${patientName}!`;
     return `The lush green tea gardens of Assam, the morning mist, and the gentle Brahmaputra breeze bring so much tranquility, ${patientName}! Reminiscing about such serene places always refreshes the spirit.`;
+  }
+
+  if (/(game|quiz|riddle|puzzle|play|test.*memory|সাঁথৰ|খেল|पहेली|खेल|ধাঁধা)/i.test(clean)) {
+    if (lang === 'as') return `আহক এটা সাঁথৰ ভাঙোঁ, ${patientName}! যাৰ হাত আছে কিন্তু হাততালি দিব নোৱাৰে, সেয়া কি? (ই বেৰত ওলমি সময় দেখুৱায়!)`;
+    if (lang === 'hi') return `आइए एक पहेली खेलते हैं, ${patientName} जी! जिसके हाथ होते हैं पर ताली नहीं बजा सकती, वह क्या है? (संकेत: दीवार पर टंगी घड़ी!)`;
+    if (lang === 'bn') return `চলুন একটি ধাঁধা সমাধান করি, ${patientName}! যার হাত আছে কিন্তু তালি দিতে পারে না, সেটি কী? (ইঙ্গিত: ঘড়ি!)`;
+    return `Let's play a fun memory exercise, ${patientName}! What has hands, but cannot clap? (Hint: It hangs on the wall and tells time!)`;
   }
 
   if (lang === 'as') return `মই আপোনাৰ কথা মন দি শুনি আছোঁ, ${patientName}। এই বিষয়ে মোক আৰু অকণমান কওকচোন।`;
   if (lang === 'hi') return `मैं आपकी बात बहुत ध्यान से सुन रहा हूँ, ${patientName} जी। मुझे इसके बारे में थोड़ा और बताइए।`;
   if (lang === 'bn') return `আমি আপনার কথা মন দিয়ে শুনছি, ${patientName}। এই বিষয়ে আমাকে আর একটু বলুন।`;
+  if (lang === 'mn') return `ঐহাক অদোমগী ৱাফম তারিবনি, ${patientName}। মসিগী মরমদা হেন্না হায়বীরকো!`;
+  if (lang === 'mz') return `I thusawi chu ka ngaithla uluk hle mai, ${patientName}. Sawi zawm zel rawh le!`;
   return `I am listening with an open heart, ${patientName}. That is so meaningful—please tell me more about what is on your mind!`;
 };
 
