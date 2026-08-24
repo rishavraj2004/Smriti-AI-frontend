@@ -55,6 +55,40 @@ const QUICK_STARTERS: Record<string, string[]> = {
   ],
 };
 
+const getLocalCompanionReply = (message: string, lang: string, patientName: string): string => {
+  const clean = (message || '').toLowerCase().trim();
+
+  if (/(tens|tesn|stres|anx|worr|scared|fear|panik|panic|nervous|troubl)/i.test(clean)) {
+    if (lang === 'as') return `আপুনি অকণো চিন্তা নকৰিব, ${patientName}। মোৰ লগত লাহেকৈ এটা দীঘল উশাহ লওক—উশাহ ভিতৰলৈ লওক আৰু এৰি দিয়ক। আপুনি সম্পূৰ্ণ সুৰক্ষিত।`;
+    if (lang === 'hi') return `बिल्कुल चिंता न करें, ${patientName} जी। मेरे साथ एक गहरी सांस लें और धीरे से छोड़ें। आप पूरी तरह सुरक्षित हैं।`;
+    if (lang === 'bn') return `একদম চিন্তা করবেন না, ${patientName}। আমার সাথে আস্তে আস্তে একটি গভীর শ্বাস নিন। আপনি সম্পূর্ণ নিরাপদ।`;
+    return `Take a gentle, slow breath with me, ${patientName}. Inhale slowly... and exhale gently. You are in a safe place. Would you like to do a 1-minute calming exercise, or talk about a happy memory?`;
+  }
+
+  if (/(what.*(to|should).*do|wt.*do|wat.*do|now.*what|confus|help)/i.test(clean)) {
+    if (lang === 'as') return `আমি কেইটামান সহজ কাম কৰিব পাৰোঁ, ${patientName}:\n১. ৩ বাৰ দীঘল উশাহ লওক\n২. এগিলাচ পানী খাওক\n৩. পুৰণি স্মৃতিৰ কথা পাতোঁ।`;
+    if (lang === 'hi') return `हम साथ मिलकर कुछ आसान काम कर सकते हैं, ${patientName} जी:\n1. 3 बार गहरी सांस लें\n2. थोड़ा सा पानी पिएं\n3. कोई सुखद याद साझा करें।`;
+    return `Here are three relaxing things we can do together right now, ${patientName}:\n1. Take 3 slow, calming breaths with me.\n2. Have a warm cup of water or tea.\n3. Play a gentle memory game or look at scrapbook photos.\n\nWhich one feels nice to you?`;
+  }
+
+  if (/(sad|lonel|alon|unhapp|depres|cry|miss)/i.test(clean)) {
+    if (lang === 'as') return `মই সদায় আপোনাৰ কাষতেই আছোঁ, ${patientName}। আপুনি কেতিয়াও অকলশৰীয়া নহয়। আপোনাৰ মনৰ কথা মোক কওক।`;
+    if (lang === 'hi') return `मैं हमेशा आपके साथ यहाँ मौजूद हूँ, ${patientName} जी। आप कभी अकेले नहीं हैं। मुझसे बेझिझक बात कीजिए।`;
+    return `I am right here beside you, ${patientName}. You are never alone. Please feel free to share whatever is in your heart—I am always here to listen with patience and warmth.`;
+  }
+
+  if (/(tea|garden|assam|kaziranga|bihu|nature|river|brahmaputra)/i.test(clean)) {
+    if (lang === 'as') return `অসমৰ সেউজীয়া চাহ বাগিচা আৰু বৰলুইতৰ শীতল বতাহে মনলৈ অনাবিল শান্তি আনে, ${patientName}!`;
+    if (lang === 'hi') return `असम के हरे-भरे चाय के बागान और ब्रह्मपुत्र की ताज़ी हवा मन को सुकून पहुँचाती है, ${patientName} जी!`;
+    return `The lush green tea gardens of Assam, the morning mist, and the gentle Brahmaputra breeze bring so much tranquility, ${patientName}! Reminiscing about such serene places always refreshes the spirit.`;
+  }
+
+  if (lang === 'as') return `মই আপোনাৰ কথা মন দি শুনি আছোঁ, ${patientName}। এই বিষয়ে মোক আৰু অকণমান কওকচোন।`;
+  if (lang === 'hi') return `मैं आपकी बात बहुत ध्यान से सुन रहा हूँ, ${patientName} जी। मुझे इसके बारे में थोड़ा और बताइए।`;
+  if (lang === 'bn') return `আমি আপনার কথা মন দিয়ে শুনছি, ${patientName}। এই বিষয়ে আমাকে আর একটু বলুন।`;
+  return `I am listening with an open heart, ${patientName}. That is so meaningful—please tell me more about what is on your mind!`;
+};
+
 export const MitrAIScreen: React.FC = () => {
   const { patient, appLanguage } = useAuth();
   const { t } = useTranslation();
@@ -183,15 +217,11 @@ export const MitrAIScreen: React.FC = () => {
         ttsService.speak(response.reply, response.language || activeLang);
       }
     } catch (err: any) {
+      const fallbackText = getLocalCompanionReply(messageContent, activeLang, patient?.name || 'Friend');
       const fallbackReply: ChatMessage = {
-        id: `err-${Date.now()}`,
+        id: `local-${Date.now()}`,
         sender: 'assistant',
-        text:
-          activeLang === 'as'
-            ? 'মই সদায় আপোনাৰ লগত আছোঁ। অলপ পিছত আকৌ কথা পাতিম।'
-            : activeLang === 'hi'
-            ? 'मैं हमेशा आपके साथ हूँ। कृपया थोड़ी देर बाद पुनः प्रयास करें।'
-            : "I am always right here with you. Let's chat again in a moment.",
+        text: fallbackText,
         language: activeLang,
         createdAt: new Date(),
       };
