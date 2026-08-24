@@ -19,10 +19,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0F766E"
-      }
+      },
+      "package": "com.rishavraj007.smritiai"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d4280501-8077-483f-861f-d9298d1f6a30"
+      }
     }
   }
 }

@@ -1,0 +1,36 @@
+{
+  "cli": {
+    "version": ">= 22.3.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://smriti-ai-backend-s505.onrender.com",
+        "EXPO_PUBLIC_ENABLE_BACKEND_TTS": "true"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://smriti-ai-backend-s505.onrender.com",
+        "EXPO_PUBLIC_ENABLE_BACKEND_TTS": "true"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://smriti-ai-backend-s505.onrender.com",
+        "EXPO_PUBLIC_ENABLE_BACKEND_TTS": "true"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

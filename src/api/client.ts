@@ -2,25 +2,28 @@ import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { Platform } from 'react-native';
 import { storageService } from '../services/storageService';
 
+const PRODUCTION_API_URL = 'https://smriti-ai-backend-s505.onrender.com';
+
 // Determine the most appropriate backend URL based on runtime environment
 export const resolveBaseUrl = (): string => {
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+
   if (Platform.OS === 'web') {
     if (typeof window !== 'undefined' && window.location.hostname) {
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:3000';
       }
-      return `http://${window.location.hostname}:3000`;
     }
-    return 'http://localhost:3000';
   }
 
-  // Mobile / Expo Go fallback: Use configured environment URL or localhost
-  return process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+  return PRODUCTION_API_URL;
 };
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: resolveBaseUrl(),
-  timeout: 20000,
+  timeout: 25000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -33,12 +36,9 @@ export const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     try {
-      // Dynamic base URL check
+      const activeBase = resolveBaseUrl();
       if (!config.baseURL || config.baseURL === 'http://localhost:3000') {
-        const dynamicUrl = resolveBaseUrl();
-        if (dynamicUrl) {
-          config.baseURL = dynamicUrl;
-        }
+        config.baseURL = activeBase;
       }
 
       // Ensure bypass tunnel header
