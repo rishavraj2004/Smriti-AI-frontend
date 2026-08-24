@@ -27,12 +27,18 @@ export const COLORS = {
   danger: '#DC2626',
   dangerLight: '#FEE2E2',
 
-  // NER Cultural accents
+  // NER Cultural accents & Mockup Colors
   teaGreen: '#2D6A4F',
   bambooYellow: '#E9C46A',
   rhinoGrey: '#4A5568',
   flowerPink: '#E63946',
   skyBlue: '#0284C7',
+  brandForest: '#14463A',
+  brandForestDark: '#0E362C',
+  brandAmberBrown: '#8C4900',
+  brandAmberBrownDark: '#78350F',
+  bgWarmIvory: '#FAF8F5',
+  cardBorderLight: '#F1F5F9',
 };
 
 export const TYPOGRAPHY = {

@@ -1,8 +1,24 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import { Platform } from 'react-native';
 import { storageService } from '../services/storageService';
 
-// Default to process.env.EXPO_PUBLIC_API_URL or local backend on port 3000
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+// Determine the most appropriate backend URL based on runtime environment
+const resolveBaseUrl = (): string => {
+  if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined' && window.location.hostname) {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000';
+      }
+      return `http://${window.location.hostname}:3000`;
+    }
+    return 'http://localhost:3000';
+  }
+
+  // Mobile / Expo Go fallback
+  return process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+};
+
+const BASE_URL = resolveBaseUrl();
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,

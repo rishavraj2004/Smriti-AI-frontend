@@ -103,7 +103,7 @@ export const PatientSignupScreen: React.FC<PatientSignupScreenProps> = ({
         {/* Header Row */}
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.backBtn} onPress={onBack} activeOpacity={0.8}>
-            <Ionicons name="arrow-back" size={22} color={COLORS.textDark} />
+            <Ionicons name="arrow-back" size={22} color={COLORS.brandForest} />
             <Text style={styles.backBtnText}>{t.nav.back}</Text>
           </TouchableOpacity>
           <Text style={styles.screenTitle}>{t.auth.createAccountTitle}</Text>
@@ -287,9 +287,10 @@ export const PatientSignupScreen: React.FC<PatientSignupScreenProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: COLORS.bgMain,
+    padding: 18,
+    backgroundColor: COLORS.bgWarmIvory,
     flexGrow: 1,
+    justifyContent: 'center',
   },
   headerRow: {
     flexDirection: 'row',
@@ -299,29 +300,31 @@ const styles = StyleSheet.create({
   backBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     gap: 4,
   },
   backBtnText: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.textDark,
+    color: COLORS.brandForest,
   },
   screenTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: COLORS.textDark,
+    color: COLORS.brandForest,
   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 22,
     padding: 20,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
     ...SHADOWS.card,
   },
   instruction: {
@@ -391,7 +394,7 @@ const styles = StyleSheet.create({
   },
   langChipSelected: {
     backgroundColor: COLORS.primaryLight,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.brandForest,
   },
   langChipText: {
     fontSize: 14,
@@ -399,7 +402,7 @@ const styles = StyleSheet.create({
     color: COLORS.textDark,
   },
   langChipTextSelected: {
-    color: COLORS.primaryDark,
+    color: COLORS.brandForest,
     fontWeight: '800',
   },
   regionScroll: {
@@ -440,7 +443,7 @@ const styles = StyleSheet.create({
   loginLink: {
     fontSize: 17,
     fontWeight: '800',
-    color: COLORS.primaryDark,
+    color: COLORS.brandForest,
     textDecorationLine: 'underline',
   },
 });

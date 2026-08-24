@@ -131,7 +131,7 @@ const UnauthenticatedFlow: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.authSafeArea} edges={['top', 'left', 'right', 'bottom']}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <WelcomeScreen
         onGoToLogin={() => setAuthScreen('login')}
         onGoToSignup={() => setAuthScreen('signup')}
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   authSafeArea: {
     flex: 1,
-    backgroundColor: COLORS.bgMain,
+    backgroundColor: COLORS.bgWarmIvory,
   },
   bodyContainer: {
     flex: 1,

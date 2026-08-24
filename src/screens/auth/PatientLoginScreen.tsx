@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../../theme/theme';
@@ -67,13 +68,24 @@ export const PatientLoginScreen: React.FC<PatientLoginScreenProps> = ({
         {/* Header Row */}
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.backBtn} onPress={onBack} activeOpacity={0.8}>
-            <Ionicons name="arrow-back" size={22} color={COLORS.textDark} />
+            <Ionicons name="arrow-back" size={22} color={COLORS.brandForest} />
             <Text style={styles.backBtnText}>{t.nav.back}</Text>
           </TouchableOpacity>
-          <Text style={styles.screenTitle}>{t.auth.signInTitle}</Text>
+          <View style={styles.headerTitleWrap}>
+            <Text style={styles.screenTitle}>{t.auth.signInTitle}</Text>
+          </View>
         </View>
 
         <View style={styles.card}>
+          <View style={styles.brandHeroSmall}>
+            <Image
+              source={require('../../../assets/smriti_logo.png')}
+              style={styles.smallLogo}
+              resizeMode="cover"
+            />
+            <Text style={styles.brandSubHeader}>Smriti AI Memory Care</Text>
+          </View>
+
           <Text style={styles.instruction}>
             {t.auth.enterCredentials}
           </Text>
@@ -157,8 +169,8 @@ export const PatientLoginScreen: React.FC<PatientLoginScreenProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: COLORS.bgMain,
+    padding: 18,
+    backgroundColor: COLORS.bgWarmIvory,
     flexGrow: 1,
     justifyContent: 'center',
   },
@@ -170,36 +182,58 @@ const styles = StyleSheet.create({
   backBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     gap: 4,
   },
   backBtnText: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.textDark,
+    color: COLORS.brandForest,
+  },
+  headerTitleWrap: {
+    flex: 1,
   },
   screenTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: COLORS.textDark,
+    color: COLORS.brandForest,
   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 22,
     padding: 22,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
     ...SHADOWS.card,
   },
+  brandHeroSmall: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  smallLogo: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    marginBottom: 8,
+  },
+  brandSubHeader: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: COLORS.brandForest,
+    letterSpacing: 0.2,
+  },
   instruction: {
-    fontSize: 16,
+    fontSize: 15,
     color: COLORS.textMuted,
     marginBottom: 18,
-    lineHeight: 22,
+    lineHeight: 21,
+    textAlign: 'center',
   },
   errorBox: {
     flexDirection: 'row',
@@ -259,7 +293,7 @@ const styles = StyleSheet.create({
   signupLink: {
     fontSize: 17,
     fontWeight: '800',
-    color: COLORS.primaryDark,
+    color: COLORS.brandForest,
     textDecorationLine: 'underline',
   },
 });
