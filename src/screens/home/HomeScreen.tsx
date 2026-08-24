@@ -54,10 +54,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateTab, onLaunchG
   }, []);
 
   const moods = [
-    { id: 'peaceful', emoji: '🌸', label: t.home.peaceful },
-    { id: 'happy', emoji: '😊', label: t.home.cheerful },
-    { id: 'calm', emoji: '🍵', label: t.home.relaxed },
-    { id: 'tired', emoji: '😴', label: t.home.needRest },
+    { id: 'peaceful', icon: <Ionicons name="leaf-outline" size={24} color={COLORS.primary} />, label: t.home.peaceful },
+    { id: 'happy', icon: <Ionicons name="sunny-outline" size={24} color={COLORS.secondary} />, label: t.home.cheerful },
+    { id: 'calm', icon: <Ionicons name="cafe-outline" size={24} color="#0D9488" />, label: t.home.relaxed },
+    { id: 'tired', icon: <Ionicons name="moon-outline" size={24} color="#6366F1" />, label: t.home.needRest },
   ];
 
   const toggleRoutine = (id: string) => {
@@ -93,8 +93,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateTab, onLaunchG
                 color="#FFFFFF"
               />
             </View>
-            <Text style={styles.regionSub}>📍 {patientRegion}</Text>
-            <Text style={styles.dateSub}>📅 {formattedDate}</Text>
+            <View style={styles.greetingSubRow}>
+              <Ionicons name="location-outline" size={13} color="rgba(255, 255, 255, 0.85)" />
+              <Text style={styles.regionSub}>{patientRegion}</Text>
+            </View>
+            <View style={styles.greetingSubRow}>
+              <Ionicons name="calendar-outline" size={13} color="rgba(255, 255, 255, 0.85)" />
+              <Text style={styles.dateSub}>{formattedDate}</Text>
+            </View>
           </View>
         </View>
 
@@ -147,7 +153,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateTab, onLaunchG
                 }}
                 activeOpacity={0.8}
               >
-                <Text style={styles.moodEmoji}>{m.emoji}</Text>
+                <View style={styles.moodIconBox}>{m.icon}</View>
                 <Text style={[styles.moodLabel, isSelected && styles.moodLabelSelected]}>
                   {m.label}
                 </Text>
@@ -165,7 +171,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateTab, onLaunchG
       >
         <View style={styles.scrapbookTopRow}>
           <View style={styles.scrapbookBadge}>
-            <Text style={styles.scrapbookBadgeText}>📖 FAMILY MEMORIES</Text>
+            <Ionicons name="book-outline" size={13} color="#FFFFFF" style={{ marginRight: 4 }} />
+            <Text style={styles.scrapbookBadgeText}>FAMILY SCRAPBOOK</Text>
           </View>
           <SpeakerButton
             text="Family Scrapbook. Browse treasured family photos, listen to recorded voice stories, and watch photo slideshows."
@@ -387,11 +394,19 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '900',
   },
+  greetingSubRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
+  },
   sectionCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 22,
     padding: 18,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     ...SHADOWS.card,
   },
   sectionTitle: {
@@ -421,11 +436,18 @@ const styles = StyleSheet.create({
   },
   moodItemSelected: {
     borderColor: COLORS.primary,
-    backgroundColor: COLORS.primaryLight + '30',
+    backgroundColor: COLORS.primaryLight,
   },
-  moodEmoji: {
-    fontSize: 28,
-    marginBottom: 4,
+  moodIconBox: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   moodLabel: {
     fontSize: 12,
@@ -434,7 +456,7 @@ const styles = StyleSheet.create({
   },
   moodLabelSelected: {
     color: COLORS.primaryDark,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   sectionHeader: {
     flexDirection: 'row',

@@ -94,7 +94,8 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
 
             <View style={{ flex: 1 }}>
               <View style={styles.headerBadge}>
-                <Text style={styles.headerBadgeText}>📖 DIGITAL FAMILY ALBUM</Text>
+                <Ionicons name="book-outline" size={13} color="#FFFFFF" style={{ marginRight: 4 }} />
+                <Text style={styles.headerBadgeText}>DIGITAL FAMILY ALBUM</Text>
               </View>
               <Text style={styles.headerTitle}>Family Scrapbook</Text>
             </View>
@@ -104,8 +105,8 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
               activeOpacity={0.85}
               onPress={() => setIsAddModalOpen(true)}
             >
-              <Ionicons name="add-circle" size={20} color="#FFFFFF" />
-              <Text style={styles.addHeaderBtnText}>+ Add Memory</Text>
+              <Ionicons name="add-circle" size={18} color="#FFFFFF" style={{ marginRight: 4 }} />
+              <Text style={styles.addHeaderBtnText}>Add Memory</Text>
             </TouchableOpacity>
           </View>
 
@@ -136,8 +137,8 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
               activeOpacity={0.85}
               onPress={() => setIsAddModalOpen(true)}
             >
-              <Ionicons name="add-circle" size={24} color="#FFFFFF" />
-              <Text style={styles.emptyAddBtnText}>+ Add First Memory</Text>
+              <Ionicons name="add-circle" size={22} color="#FFFFFF" style={{ marginRight: 4 }} />
+              <Text style={styles.emptyAddBtnText}>Add First Memory</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -146,7 +147,10 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
             {featuredMemory && (
               <View style={styles.featuredSection}>
                 <View style={styles.sectionHeaderRow}>
-                  <Text style={styles.sectionTitle}>🌟 Featured Memory</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="sparkles" size={18} color={COLORS.secondary} style={{ marginRight: 6 }} />
+                    <Text style={styles.sectionTitle}>Featured Memory</Text>
+                  </View>
                   <SpeakerButton
                     text={`Featured Memory: ${featuredMemory.title}. ${featuredMemory.description || ''}`}
                     language={language}
@@ -169,12 +173,14 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
                     <View style={styles.featuredMetaRow}>
                       {Boolean(featuredMemory.date) && (
                         <View style={styles.featuredTag}>
-                          <Text style={styles.featuredTagText}>📅 {featuredMemory.date}</Text>
+                          <Ionicons name="calendar-outline" size={11} color="#FFFFFF" style={{ marginRight: 4 }} />
+                          <Text style={styles.featuredTagText}>{featuredMemory.date}</Text>
                         </View>
                       )}
                       {Boolean(featuredMemory.location) && (
                         <View style={styles.featuredTag}>
-                          <Text style={styles.featuredTagText}>📍 {featuredMemory.location}</Text>
+                          <Ionicons name="location-outline" size={11} color="#FFFFFF" style={{ marginRight: 4 }} />
+                          <Text style={styles.featuredTagText}>{featuredMemory.location}</Text>
                         </View>
                       )}
                     </View>
@@ -193,11 +199,12 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
                       <View style={styles.listenPill}>
                         <Ionicons
                           name={featuredMemory.voice?.url ? 'volume-high' : 'images'}
-                          size={18}
+                          size={16}
                           color="#FFFFFF"
+                          style={{ marginRight: 4 }}
                         />
                         <Text style={styles.listenPillText}>
-                          {featuredMemory.voice?.url ? '🔊 Listen & View' : '📷 Open Album'}
+                          {featuredMemory.voice?.url ? 'Listen & View' : 'Open Album'}
                         </Text>
                       </View>
 
@@ -218,7 +225,7 @@ export const FamilyScrapbookScreen: React.FC<FamilyScrapbookScreenProps> = ({
                 onPress={() => handleOpenMemory(onThisDayMemory)}
               >
                 <View style={styles.onThisDayIcon}>
-                  <Text style={styles.onThisDayEmoji}>❤️</Text>
+                  <Ionicons name="heart" size={20} color={COLORS.danger} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.onThisDaySuper}>ON THIS DAY IN MEMORY</Text>

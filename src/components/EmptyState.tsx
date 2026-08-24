@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../theme/theme';
 import { ElderlyButton } from './ElderlyButton';
 
 interface EmptyStateProps {
-  icon?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
   title: string;
   description: string;
   actionText?: string;
@@ -12,7 +13,7 @@ interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  icon = '📋',
+  icon = 'clipboard-outline',
   title,
   description,
   actionText,
@@ -20,7 +21,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.icon}>{icon}</Text>
+      <View style={styles.iconCircle}>
+        <Ionicons name={icon} size={36} color={COLORS.primary} />
+      </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
       {actionText && onAction && (
@@ -28,7 +31,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           title={actionText}
           onPress={onAction}
           variant="primary"
-          style={{ marginTop: 16, width: '100%' }}
+          style={{ marginTop: 18, width: '100%' }}
         />
       )}
     </View>
@@ -39,16 +42,21 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 24,
+    padding: 26,
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     marginVertical: 12,
     ...SHADOWS.card,
   },
-  icon: {
-    fontSize: 48,
-    marginBottom: 12,
+  iconCircle: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: COLORS.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
   },
   title: {
     fontSize: 19,

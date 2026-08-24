@@ -127,7 +127,7 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
         {/* Hero Card */}
         <View style={styles.heroCard}>
           <View style={styles.heroIconCircle}>
-            <Text style={styles.heroEmoji}>🤝</Text>
+            <Ionicons name="people" size={26} color="#FFFFFF" />
           </View>
           <Text style={styles.heroTitle}>Family & Caregiver Companion</Text>
           <Text style={styles.heroSub}>
@@ -251,7 +251,6 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
               title={authMode === 'login' ? 'Sign In as Caregiver' : 'Create Caregiver Account'}
               onPress={handleCaregiverAuth}
               variant="primary"
-              icon={authMode === 'login' ? '🔓' : '✨'}
               loading={isLoading}
               style={{ marginTop: 10 }}
             />
@@ -261,7 +260,7 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
           <>
             {/* Link Patient Key Card */}
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>🔑 Link Patient Pairing Key</Text>
+              <Text style={styles.cardTitle}>Link Patient Pairing Key</Text>
               <Text style={styles.cardSub}>
                 Enter the 8-character pairing code shown on your loved one's Smriti AI screen (e.g. SMR-XXXX).
               </Text>
@@ -283,7 +282,6 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
                 title="Link Patient Account"
                 onPress={handleLinkPatient}
                 variant="secondary"
-                icon="🔗"
                 loading={isLinking}
                 style={{ marginTop: 4 }}
               />
@@ -294,7 +292,7 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
               <View style={styles.linkedPatientCard}>
                 <View style={styles.linkedHeader}>
                   <View style={styles.patientAvatar}>
-                    <Text style={styles.patientAvatarEmoji}>👤</Text>
+                    <Ionicons name="person" size={24} color={COLORS.primary} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.linkedTitle}>Linked Patient</Text>
@@ -326,7 +324,9 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
               </View>
             ) : (
               <View style={styles.noPatientBox}>
-                <Text style={styles.noPatientEmoji}>📋</Text>
+                <View style={styles.noPatientIconCircle}>
+                  <Ionicons name="clipboard-outline" size={28} color={COLORS.textMuted} />
+                </View>
                 <Text style={styles.noPatientTitle}>No Patient Linked Yet</Text>
                 <Text style={styles.noPatientSub}>
                   Enter your loved one's code above to link their account to your dashboard.
@@ -339,7 +339,6 @@ export const CaregiverPortalScreen: React.FC<CaregiverPortalScreenProps> = ({ on
               title="Sign Out of Caregiver Portal"
               onPress={logoutCaregiver}
               variant="outline"
-              icon="🚪"
               style={{ marginTop: 12, marginBottom: 20 }}
             />
           </>
@@ -608,9 +607,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     ...SHADOWS.card,
   },
-  noPatientEmoji: {
-    fontSize: 40,
-    marginBottom: 8,
+  noPatientIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   noPatientTitle: {
     fontSize: 18,

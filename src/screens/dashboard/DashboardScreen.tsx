@@ -8,8 +8,8 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { COLORS, SHADOWS } from '../../theme/theme';
+import { Ionicons, MaterialCommunityIcons, FontAwesome5, Feather } from '@expo/vector-icons';
+import { COLORS, SHADOWS, TYPOGRAPHY } from '../../theme/theme';
 import { useAuth } from '../../context/AuthContext';
 import { useGameStats } from '../../context/GameStatsContext';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -50,23 +50,23 @@ const getGameTitle = (gameType: string): string => {
 const getGameIcon = (gameType: string) => {
   switch (gameType) {
     case 'memory':
-      return <MaterialCommunityIcons name="cards-playing-outline" size={24} color={COLORS.teaGreen} />;
+      return <MaterialCommunityIcons name="cards-playing-outline" size={22} color={COLORS.teaGreen} />;
     case 'attention':
-      return <Ionicons name="eye-outline" size={24} color={COLORS.secondaryDark} />;
+      return <Ionicons name="eye-outline" size={22} color={COLORS.secondaryDark} />;
     case 'math_memory':
     case 'mathMemory':
-      return <MaterialCommunityIcons name="calculator-variant" size={24} color="#2563EB" />;
+      return <MaterialCommunityIcons name="calculator-variant" size={22} color="#2563EB" />;
     case 'object_recognition':
     case 'objectRecognition':
-      return <Ionicons name="cube-outline" size={24} color="#BE185D" />;
+      return <Ionicons name="cube-outline" size={22} color="#BE185D" />;
     case 'routine_recall':
     case 'routineRecall':
-      return <Ionicons name="time-outline" size={24} color="#7E22CE" />;
+      return <Ionicons name="time-outline" size={22} color="#7E22CE" />;
     case 'word_association':
     case 'wordAssociation':
-      return <FontAwesome5 name="book-open" size={20} color="#0D9488" />;
+      return <FontAwesome5 name="book-open" size={17} color="#0D9488" />;
     default:
-      return <Ionicons name="game-controller-outline" size={24} color={COLORS.primary} />;
+      return <Ionicons name="game-controller-outline" size={22} color={COLORS.primary} />;
   }
 };
 
@@ -84,8 +84,8 @@ const getDifficultyLabel = (diff?: number): string => {
 };
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab }) => {
-  const { patient, caregiver, caregiverToken, linkedPatient, linkPatientWithCode, fetchCaregiverDashboard } = useAuth();
-  const { sessionHistory, domainScores, totalGamesPlayedToday, averageScore, refreshStats } = useGameStats();
+  const { patient, caregiver, caregiverToken, linkedPatient, linkPatientWithCode } = useAuth();
+  const { sessionHistory, domainScores, totalGamesPlayedToday, averageScore } = useGameStats();
   const { t } = useTranslation();
 
   const [caregiverData, setCaregiverData] = useState<CaregiverPerformanceData | null>(null);
@@ -104,13 +104,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       setLinkingError(null);
 
       if (isCaregiverView && caregiverToken) {
-        // 1. Fetch caregiver performance metrics from MongoDB
         const data = await gamesApi.getCaregiverPerformance(caregiverToken);
         if (data) {
           setCaregiverData(data);
         }
 
-        // 2. Fetch individual session records from MongoDB
         const sessionRes = await gamesApi.getCaregiverSessions(caregiverToken);
         if (sessionRes && sessionRes.success && Array.isArray(sessionRes.sessions)) {
           setCaregiverSessions(
@@ -128,7 +126,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
           );
         }
       } else {
-        // Patient view: refresh context & fetch history directly from MongoDB
         try {
           const directRes = await gamesApi.getHistory();
           if (directRes && directRes.success && Array.isArray(directRes.sessions)) {
@@ -147,7 +144,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
             );
           }
         } catch {
-          // Fallback to local sessionHistory
+          // Non-blocking
         }
       }
     } catch (err: any) {
@@ -210,14 +207,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       category: 'Working Memory',
       score: activeDomainScores.memory,
       color: COLORS.primary,
-      icon: <MaterialCommunityIcons name="cards-playing-outline" size={20} color={COLORS.teaGreen} />,
+      icon: <MaterialCommunityIcons name="cards-playing-outline" size={20} color={COLORS.primary} />,
     },
     {
       title: t.games.game2Title,
       category: 'Focus & Attention',
       score: activeDomainScores.attention,
       color: COLORS.secondary,
-      icon: <Ionicons name="eye-outline" size={20} color={COLORS.secondaryDark} />,
+      icon: <Ionicons name="eye-outline" size={20} color={COLORS.secondary} />,
     },
     {
       title: t.games.game3Title,
@@ -251,13 +248,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Caregiver Link Patient Card (if caregiver has not linked a patient yet) */}
+      {/* Caregiver Link Patient Card */}
       {isCaregiverView && !hasLinkedPatient && (
         <View style={styles.linkCard}>
-          <Text style={styles.linkCardEmoji}>🔗</Text>
+          <View style={styles.linkCardIconBox}>
+            <Ionicons name="link-outline" size={28} color={COLORS.primary} />
+          </View>
           <Text style={styles.linkCardTitle}>Link Patient Account</Text>
           <Text style={styles.linkCardSub}>
-            Enter the patient's unique 4-character pairing code (found on their Profile screen e.g. SMR-XXXX) to monitor their cognitive progress in real-time.
+            Enter the patient's unique 8-character pairing code (found on their Profile screen e.g. SMR-XXXX) to monitor their cognitive progress in real-time.
           </Text>
 
           {linkingError && (
@@ -268,7 +267,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
 
           <TextInput
             style={styles.pairingInput}
-            placeholder="e.g. SMR-ABCD"
+            placeholder="SMR-XXXX"
             placeholderTextColor="#94A3B8"
             value={pairingCodeInput}
             onChangeText={setPairingCodeInput}
@@ -277,10 +276,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
           />
 
           <ElderlyButton
-            title={isLinking ? 'Linking...' : 'Link Patient'}
+            title={isLinking ? 'Linking...' : 'Connect Patient'}
             onPress={handleLinkPatient}
             variant="primary"
-            icon="🔗"
             size="normal"
             disabled={isLinking || !pairingCodeInput.trim()}
           />
@@ -307,7 +305,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
               {t.dashboard.caregiverId}: {activePairingCode}
             </Text>
             {activePatient?.region && (
-              <Text style={styles.regionSub}>📍 {activePatient.region}</Text>
+              <View style={styles.regionRow}>
+                <Ionicons name="location-outline" size={14} color={COLORS.textMuted} />
+                <Text style={styles.regionSub}>{activePatient.region}</Text>
+              </View>
             )}
           </View>
 
@@ -318,10 +319,25 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
               activeTrend === 'Needs Attention' && styles.trendAttention,
             ]}
           >
-            <Text style={styles.trendText}>
-              {activeTrend === 'Improving' ? '📈' : activeTrend === 'Needs Attention' ? '🎯' : '✨'}{' '}
-              {activeTrend}
-            </Text>
+            <Ionicons
+              name={
+                activeTrend === 'Improving'
+                  ? 'trending-up'
+                  : activeTrend === 'Needs Attention'
+                  ? 'alert-circle-outline'
+                  : 'sparkles-outline'
+              }
+              size={15}
+              color={
+                activeTrend === 'Improving'
+                  ? COLORS.success
+                  : activeTrend === 'Needs Attention'
+                  ? COLORS.danger
+                  : COLORS.primaryDark
+              }
+              style={{ marginRight: 4 }}
+            />
+            <Text style={styles.trendText}>{activeTrend}</Text>
           </View>
         </View>
 
@@ -344,20 +360,21 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       <View style={styles.adaptiveEngineCard}>
         <View style={styles.adaptiveTopRow}>
           <View style={styles.adaptivePill}>
-            <Text style={styles.adaptivePillText}>⚡ AI ADAPTIVE ENGINE</Text>
+            <Ionicons name="flash-outline" size={13} color="#E0E7FF" style={{ marginRight: 4 }} />
+            <Text style={styles.adaptivePillText}>AI ADAPTIVE ENGINE</Text>
           </View>
-          <Text style={styles.adaptiveStatusText}>Real-Time Calibration</Text>
+          <Text style={styles.adaptiveStatusText}>Active Calibration</Text>
         </View>
         <Text style={styles.adaptiveTitle}>Automated Cognitive Pacing</Text>
         <Text style={styles.adaptiveDesc}>
-          Exercises dynamically adjust item density, question complexity, and response time limits based on recent session moving averages.
+          Exercises dynamically calibrate difficulty and item complexity based on recent performance metrics.
         </Text>
         <TouchableOpacity
           style={styles.quickPlayBtn}
           activeOpacity={0.8}
           onPress={() => onNavigateTab('games')}
         >
-          <Text style={styles.quickPlayBtnText}>Open Cognitive Games Hub</Text>
+          <Text style={styles.quickPlayBtnText}>Open Cognitive Games</Text>
           <Ionicons name="arrow-forward" size={16} color="#FFFFFF" style={{ marginLeft: 6 }} />
         </TouchableOpacity>
       </View>
@@ -421,11 +438,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
       {isLoading ? (
         <View style={styles.loadingBox}>
           <ActivityIndicator size="small" color={COLORS.primary} />
-          <Text style={styles.loadingText}>Fetching MongoDB session data...</Text>
+          <Text style={styles.loadingText}>Fetching session records...</Text>
         </View>
       ) : activeSessionsList.length === 0 ? (
         <EmptyState
-          icon="🎮"
+          icon="game-controller-outline"
           title={t.dashboard.noHistoryTitle}
           description={
             isCaregiverView
@@ -450,7 +467,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
                     <Text style={styles.historyTitle}>{item.gameTitle || getGameTitle(item.gameType)}</Text>
                     {Boolean(item.difficulty) && (
                       <View style={styles.diffBadge}>
-                        <Text style={styles.diffBadgeText}>Lv {item.difficulty}</Text>
+                        <Text style={styles.diffBadgeText}>{getDifficultyLabel(item.difficulty)}</Text>
                       </View>
                     )}
                   </View>
@@ -485,39 +502,47 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateTab 
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 16,
     backgroundColor: COLORS.bgMain,
-    paddingBottom: 40,
+    paddingBottom: 36,
   },
   linkCard: {
-    backgroundColor: COLORS.bgCard,
-    borderRadius: 22,
-    padding: 20,
-    marginBottom: 20,
-    borderWidth: 2,
-    borderColor: '#C7D2FE',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 22,
+    marginBottom: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     ...SHADOWS.card,
   },
-  linkCardEmoji: {
-    fontSize: 32,
-    marginBottom: 6,
+  linkCardIconBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: COLORS.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
   },
   linkCardTitle: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
-    color: COLORS.primaryDark,
+    color: COLORS.textDark,
     marginBottom: 4,
   },
   linkCardSub: {
     fontSize: 14,
     color: COLORS.textMuted,
-    lineHeight: 20,
-    marginBottom: 14,
+    lineHeight: 21,
+    textAlign: 'center',
+    marginBottom: 16,
   },
   pairingInput: {
+    width: '100%',
     backgroundColor: '#F8FAFC',
-    borderWidth: 2,
-    borderColor: '#CBD5E1',
+    borderWidth: 1.5,
+    borderColor: COLORS.borderMedium,
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -529,6 +554,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   errorBox: {
+    width: '100%',
     backgroundColor: '#FEE2E2',
     padding: 10,
     borderRadius: 10,
@@ -538,12 +564,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#991B1B',
+    textAlign: 'center',
   },
   headerCard: {
-    backgroundColor: COLORS.bgCard,
-    borderRadius: 24,
-    padding: 22,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     ...SHADOWS.card,
   },
   headerTop: {
@@ -553,12 +582,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '800',
     color: COLORS.textDark,
+    letterSpacing: -0.2,
   },
   patientSub: {
-    fontSize: 16,
+    fontSize: 15,
     color: COLORS.primaryDark,
     fontWeight: '700',
     marginTop: 4,
@@ -569,29 +599,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 2,
   },
+  regionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
   regionSub: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.textMuted,
-    marginTop: 2,
+    fontWeight: '500',
   },
   trendBadge: {
-    backgroundColor: '#EEF2FF',
-    paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primaryLight,
+    paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#C7D2FE',
   },
   trendImproving: {
-    backgroundColor: '#F0FDF4',
-    borderColor: '#BBF7D0',
+    backgroundColor: COLORS.successLight,
   },
   trendAttention: {
-    backgroundColor: '#FEF3C7',
-    borderColor: '#FDE68A',
+    backgroundColor: COLORS.warningLight,
   },
   trendText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     color: COLORS.primaryDark,
   },
@@ -599,7 +633,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.primaryLight,
     borderRadius: 16,
-    padding: 16,
+    padding: 14,
     alignItems: 'center',
   },
   summaryBox: {
@@ -608,26 +642,26 @@ const styles = StyleSheet.create({
   },
   summaryDivider: {
     width: 1,
-    height: 35,
-    backgroundColor: '#C7D2FE',
+    height: 32,
+    backgroundColor: '#CBD5E1',
   },
   summaryLabel: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.primaryDark,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: 3,
     textAlign: 'center',
   },
   summaryValue: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
     color: COLORS.primaryDark,
   },
   adaptiveEngineCard: {
-    backgroundColor: '#1E1B4B',
+    backgroundColor: '#0F172A',
     borderRadius: 20,
     padding: 18,
-    marginBottom: 20,
+    marginBottom: 16,
     ...SHADOWS.card,
   },
   adaptiveTopRow: {
@@ -637,32 +671,34 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   adaptivePill: {
-    backgroundColor: '#4338CA',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
   },
   adaptivePillText: {
-    color: '#E0E7FF',
+    color: '#F8FAFC',
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 0.5,
   },
   adaptiveStatusText: {
-    color: '#A5B4FC',
+    color: '#94A3B8',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   adaptiveTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '800',
     color: '#FFFFFF',
     marginBottom: 4,
   },
   adaptiveDesc: {
     fontSize: 13,
-    color: '#C7D2FE',
-    lineHeight: 18,
+    color: '#CBD5E1',
+    lineHeight: 19,
     marginBottom: 12,
   },
   quickPlayBtn: {
@@ -688,7 +724,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     color: COLORS.textDark,
   },
@@ -701,14 +737,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    backgroundColor: COLORS.bgCard,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    ...SHADOWS.card,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
   },
   refreshLink: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -718,30 +755,32 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   loadingText: {
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.textMuted,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   domainGrid: {
-    gap: 12,
-    marginBottom: 20,
+    gap: 10,
+    marginBottom: 18,
   },
   domainCard: {
-    backgroundColor: COLORS.bgCard,
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     ...SHADOWS.card,
   },
   domainHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   domainIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: '#F8FAFC',
     justifyContent: 'center',
     alignItems: 'center',
@@ -750,60 +789,62 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
   },
   domainName: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: COLORS.textDark,
   },
   domainCategory: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.textMuted,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   scoreBadge: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   scoreText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '800',
     color: COLORS.primaryDark,
   },
   scoreNoneText: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.textMuted,
     fontWeight: '600',
   },
   progressContainer: {
-    height: 10,
+    height: 8,
     backgroundColor: '#E2E8F0',
-    borderRadius: 5,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   progressBar: {
     height: '100%',
     backgroundColor: COLORS.primary,
-    borderRadius: 5,
+    borderRadius: 4,
   },
   emptyDomainText: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.textMuted,
     fontStyle: 'italic',
   },
   historyList: {
-    gap: 12,
+    gap: 10,
   },
   historyCard: {
-    backgroundColor: COLORS.bgCard,
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 16,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     ...SHADOWS.card,
   },
   historyIconBox: {
-    width: 44,
-    height: 44,
+    width: 42,
+    height: 42,
     borderRadius: 12,
     backgroundColor: '#F8FAFC',
     justifyContent: 'center',
@@ -816,43 +857,43 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   historyTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: COLORS.textDark,
   },
   diffBadge: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: '#F1F5F9',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
   },
   diffBadgeText: {
     fontSize: 10,
-    fontWeight: '800',
-    color: '#B45309',
+    fontWeight: '700',
+    color: COLORS.textMuted,
   },
   historyTime: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.textMuted,
     marginTop: 2,
   },
   historyMoves: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.primary,
     fontWeight: '600',
     marginTop: 2,
   },
   historyRight: {
     alignItems: 'flex-end',
-    marginLeft: 10,
+    marginLeft: 8,
   },
   historyScore: {
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: '800',
     color: COLORS.primaryDark,
   },
   accuracyText: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.textMuted,
     marginTop: 2,
   },

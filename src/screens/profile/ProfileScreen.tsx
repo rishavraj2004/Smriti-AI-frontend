@@ -66,7 +66,7 @@ export const ProfileScreen: React.FC = () => {
         <View style={styles.profileCard}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
             <View style={styles.avatarCircle}>
-              <Text style={styles.avatarText}>👤</Text>
+              <Ionicons name="person" size={28} color="#FFFFFF" />
             </View>
             <SpeakerButton
               text={`Patient Profile. ${patient?.name || t.profile.title}. Age ${patient?.age || 'not set'}. Region: ${patient?.region || 'North Eastern Region'}.`}
@@ -101,7 +101,6 @@ export const ProfileScreen: React.FC = () => {
             title={copied ? t.profile.codeCopied : t.profile.copyCode}
             onPress={handleCopyCode}
             variant={copied ? 'success' : 'secondary'}
-            icon={copied ? '✓' : '📋'}
             size="normal"
           />
         </View>
@@ -112,7 +111,9 @@ export const ProfileScreen: React.FC = () => {
           activeOpacity={0.85}
           onPress={() => setSosModalVisible(true)}
         >
-          <Text style={styles.sosEmoji}>🚨</Text>
+          <View style={styles.sosIconCircle}>
+            <Ionicons name="alert-circle" size={26} color="#FFFFFF" />
+          </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.sosTitle}>{t.profile.emergencySosTitle}</Text>
             <Text style={styles.sosSub}>{t.profile.emergencySosSub}</Text>
@@ -201,7 +202,6 @@ export const ProfileScreen: React.FC = () => {
           title={t.profile.signOutBtn}
           onPress={handleLogoutPress}
           variant="danger"
-          icon="🚪"
           loading={loggingOut}
           style={{ marginTop: 6, marginBottom: 20 }}
         />
@@ -220,7 +220,9 @@ export const ProfileScreen: React.FC = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalEmoji}>🚪</Text>
+            <View style={[styles.modalIconBox, { backgroundColor: COLORS.dangerLight }]}>
+              <Ionicons name="log-out-outline" size={32} color={COLORS.danger} />
+            </View>
             <Text style={styles.modalTitle}>{t.profile.signOutModalTitle}</Text>
             <Text style={styles.modalSubtitle}>{t.profile.signOutModalSub}</Text>
 
@@ -229,7 +231,6 @@ export const ProfileScreen: React.FC = () => {
                 title={t.profile.yesSignOut}
                 onPress={confirmLogout}
                 variant="danger"
-                icon="🚪"
                 style={{ marginBottom: 10, width: '100%' }}
               />
               <ElderlyButton
@@ -252,7 +253,9 @@ export const ProfileScreen: React.FC = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalEmoji}>🚨</Text>
+            <View style={[styles.modalIconBox, { backgroundColor: COLORS.dangerLight }]}>
+              <Ionicons name="warning-outline" size={32} color={COLORS.danger} />
+            </View>
             <Text style={styles.modalTitle}>{t.profile.emergencySosTitle}</Text>
             <Text style={styles.modalSubtitle}>
               {t.profile.emergencySosSub} ({patient?.name || 'Patient'}). Code: {pairingCode}.
@@ -288,16 +291,13 @@ const styles = StyleSheet.create({
     ...SHADOWS.card,
   },
   avatarCircle: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    backgroundColor: COLORS.primaryLight,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10,
-  },
-  avatarText: {
-    fontSize: 36,
   },
   name: {
     fontSize: 22,
@@ -320,8 +320,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 18,
     marginBottom: 16,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     ...SHADOWS.card,
   },
   sectionTitle: {
@@ -340,15 +340,15 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
     alignItems: 'center',
-    marginBottom: 10,
-    borderWidth: 2,
+    marginBottom: 12,
+    borderWidth: 1.5,
     borderColor: COLORS.primary,
   },
   codeText: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '900',
-    color: COLORS.textDark,
-    letterSpacing: 3,
+    color: COLORS.primaryDark,
+    letterSpacing: 2,
   },
   sosBtn: {
     flexDirection: 'row',
@@ -360,8 +360,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     ...SHADOWS.card,
   },
-  sosEmoji: {
-    fontSize: 32,
+  sosIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sosTitle: {
     color: '#FFFFFF',
@@ -393,7 +398,7 @@ const styles = StyleSheet.create({
   },
   langText: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '600',
     color: COLORS.textDark,
   },
   langTextSelected: {
@@ -424,7 +429,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -436,25 +441,29 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 380,
     alignItems: 'center',
-    ...SHADOWS.card,
+    ...SHADOWS.cardHover,
   },
-  modalEmoji: {
-    fontSize: 54,
-    marginBottom: 12,
+  modalIconBox: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
   },
   modalTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '800',
     color: COLORS.textDark,
     textAlign: 'center',
     marginBottom: 8,
   },
   modalSubtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.textMuted,
     textAlign: 'center',
     marginBottom: 20,
-    lineHeight: 22,
+    lineHeight: 20,
   },
   modalActions: {
     width: '100%',

@@ -366,14 +366,15 @@ export const MitrAIScreen: React.FC = () => {
         <View style={styles.headerCard}>
           <View style={styles.headerLeft}>
             <View style={styles.avatarCircle}>
-              <Text style={styles.avatarEmoji}>🤖</Text>
+              <Ionicons name="sparkles" size={22} color={COLORS.primaryDark} />
               <View style={styles.onlineBadge} />
             </View>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text style={styles.title}>{t.mitr.title}</Text>
                 <View style={styles.languagePill}>
-                  <Text style={styles.languagePillText}>🗣️ {currentLangLabel}</Text>
+                  <Ionicons name="language-outline" size={13} color="#FFFFFF" style={{ marginRight: 4 }} />
+                  <Text style={styles.languagePillText}>{currentLangLabel}</Text>
                 </View>
               </View>
               <Text style={styles.subtitle}>{t.mitr.subtitle}</Text>
@@ -423,7 +424,7 @@ export const MitrAIScreen: React.FC = () => {
                 >
                   {!isUser && (
                     <View style={styles.botMiniAvatar}>
-                      <Text style={{ fontSize: 16 }}>🤖</Text>
+                      <Ionicons name="sparkles" size={14} color={COLORS.primaryDark} />
                     </View>
                   )}
 
@@ -473,7 +474,7 @@ export const MitrAIScreen: React.FC = () => {
           {isSending && (
             <View style={[styles.messageRow, styles.messageRowAssistant]}>
               <View style={styles.botMiniAvatar}>
-                <Text style={{ fontSize: 16 }}>🤖</Text>
+                <Ionicons name="sparkles" size={14} color={COLORS.primaryDark} />
               </View>
               <View style={[styles.bubble, styles.bubbleAssistant, styles.typingBubble]}>
                 <ActivityIndicator size="small" color={COLORS.primary} />
@@ -486,7 +487,10 @@ export const MitrAIScreen: React.FC = () => {
         {/* Quick Starters Carousel / Suggestions */}
         <View style={styles.startersSection}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 6 }}>
-            <Text style={styles.startersTitle}>✨ Suggested Topics:</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="bulb-outline" size={16} color={COLORS.primary} style={{ marginRight: 5 }} />
+              <Text style={styles.startersTitle}>Suggested Topics</Text>
+            </View>
             <SpeakerButton
               text={`Suggested topics for conversation: ${currentStarters.join('. ')}`}
               language={activeLang}
