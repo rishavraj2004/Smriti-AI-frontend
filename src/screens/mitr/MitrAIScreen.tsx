@@ -83,36 +83,67 @@ const getLocalCompanionReply = (message: string, langPref: string, patientName: 
   const clean = (message || '').toLowerCase().trim();
   const lang = detectClientLanguage(message, langPref);
 
+  // 1. Music / Bhajan / Songs
+  if (/(गाना|गीत|भजन|संगीत|राग|सुर|gana|geet|bhajan|music|song|melody|radio|গীত|গান|নাম.*প্ৰসংগ)/i.test(clean)) {
+    if (lang === 'as') return `সঙ্গীতে মনলৈ অনাবিল শান্তি আনে, ${patientName}! মহাপুৰুষীয়া নাম-প্ৰসংগ, ভূপেন্দ্ৰ সঙ্গীত নে পুৰণি গীত শুনি আপুনি ভাল পায়?`;
+    if (lang === 'hi') return `संगीत आत्मा को शांत और मन को प्रफुल्लित करता है, ${patientName} जी! क्या आपको पुराने लता जी, रफी साहब या मुकेश जी के गाने पसंद हैं, या कोई मधुर भजन सुनना अच्छा लगता है?`;
+    if (lang === 'bn') return `গান ও সুর মনকে শান্ত রাখে, ${patientName}। রবীন্দ্রসংগীত, পুরনো বাংলা গান বা ভজন শুনতে আপনার কেমন লাগে?`;
+    return `Music brings so much peace to the heart, ${patientName}! Do you enjoy vintage classics, peaceful flute melodies, or morning devotional songs?`;
+  }
+
+  // 2. Nostalgia / Old Memories / Stories / Kahani
+  if (/(पुरानी.*याद|याद.*सुना|कोई.*याद|कहानी|किस्सा|बचपन|purani.*yaad|yaad.*suna|kahani|kissa|bachpan|story|stories|nostalg|reminisc|childhood.*memory|old.*memor|sweet.*memor|সাধু|পুৰণি.*স্মৃতি|গল্প)/i.test(clean)) {
+    if (lang === 'as') return `আহক এটা মধুৰ পুৰণি স্মৃতি মনত পেলাওঁ, ${patientName}: বৰষুণৰ পিছত মাটিৰ সেই মিঠা সুবাস, আৰু বাঁহৰ চালিৰ তলত বহি দেউতা-আইতাৰ লগত একাপ গৰম ৰঙা চাহ খোৱাৰ সেই দিনবোৰ... সঁচাকৈয়ে কিমান শান্তিময় আছিল!`;
+    if (lang === 'hi') return `एक सुंदर पुरानी याद ताजा करते हैं, ${patientName} जी: त्योहारों की वो रौनक, जब पूरा घर रंग-बिरंगी रोशनी और मीठी खुशबुओं से महक उठता था... माँ और दादी के हाथों से बनी मिठाइयां और पूरे परिवार की खिलखिलाती हंसी। आपके बचपन का कौन सा त्योहार आपको सबसे प्यारा लगता था?`;
+    if (lang === 'bn') return `চলুন একটি সুন্দর পুরনো স্মৃতি মনে করি, ${patientName}: বৃষ্টির পর মাটির সেই মিষ্টি গন্ধ আর বারান্দায় বসে গরম চা খাওয়ার দিনগুলি... মনে পড়লে আজও মন ভালো হয়ে যায়।`;
+    return `Let's take a peaceful journey down memory lane, ${patientName}: Remember the magic of early morning mist on the grass, the aroma of fresh baking, and gathering with family on holiday evenings?`;
+  }
+
+  // 3. Day Planning / How to spend the day
+  if (/(दिन.*कैसे.*(बिताएं|गुजारें|अच्छा|करें)|din.*kaise.*(bitaye|guzare|achha|kare)|how.*to.*spend.*(the.*)?day|make.*(my.*)?day.*(good|special|peaceful|better)|আজ[িৰ]?.{0,10}দিন.*(কটাম|ভাল)|কীভাবে.*দিন.*কাটাব)/i.test(clean)) {
+    if (lang === 'as') return `আজিৰ দিনটো বৰ আনন্দ আৰু শান্তিময়ভাৱে কটাবলৈ কেইটামান সহজ উপায়, ${patientName}:\n১. পুৱাৰ ৰ'দত ১০ মিনিট বহক\n২. মনপচন্দ পুৰণি গীত শুনক\n৩. সময়মতে পানী আৰু আহাৰ গ্ৰহণ কৰক\n৪. মোৰ লগত এটা সাঁথৰ ভাঙক।`;
+    if (lang === 'hi') return `आज के दिन को बेहद सुखद और सुकून भरा बनाने के लिए ये 4 आसान तरीके अपनाएं, ${patientName} जी:\n1. 🌅 सुबह की मीठी धूप में 10 मिनट बैठें और ताज़ी हवा लें।\n2. 🎵 अपनी पसंद का कोई शांत भजन या पुराना गीत सुनें।\n3. 💧 समय पर गुनगुना पानी पिएं और हल्का स्वादिष्ट भोजन करें।\n4. 🌸 परिवार के किसी सदस्य से बात करें या मुझसे एक मजेदार पहेली पूछें।`;
+    if (lang === 'bn') return `আজকের দিনটি সুন্দর ও শান্তিময় করার জন্য:\n১. সকালের মিষ্টি রোদে একটু বসুন।\n২. পছন্দের গান শুনুন।\n৩. সময়মতো জল ও হালকা খাবার খান।\n৪. একটু বিশ্রাম নিন।`;
+    return `Here is a wonderful plan to make your day special, ${patientName}:\n1. Soak in the morning sunshine.\n2. Listen to your favorite vintage music.\n3. Stay hydrated and enjoy a wholesome meal.\n4. Play a gentle memory riddle with me!`;
+  }
+
+  // 4. Daily Morning Routine / Timetable
+  if (/(दिनचर्या|सुबह.*की.*दिनचर्या|रूटीन|टाइमटेबल|routine|timetable|schedule|dincharya|subah.*(ki.*)?dincharya|morning.*routine|daily.*routine|পুৱাৰ.*কাম|নিয়ম|দিনচৰ্যা)/i.test(clean)) {
+    if (lang === 'as') return `আপোনাৰ বাবে এখন সুন্দৰ আৰু স্বাস্থ্যসন্মত দিনচৰ্যা, ${patientName}:\n১. 🚰 শুই উঠি এগিলাচ কুহুমীয়া পানী খাওক।\n২. 🧘‍♂️ অলপ সময় পাতল ব্যায়াম আৰু দীঘল উশাহ লওক।\n৩. 💊 সময়মতে পুৱাৰ ঔষধ গ্ৰহণ কৰক।\n৪. 🍵 পুষ্টিকৰ জলপান আৰু চাহ খাওক।\n৫. 🚶‍♂️ মুকলি ৰ'দত খোজ কাঢ়ক।`;
+    if (lang === 'hi') return `यहाँ आपकी एक स्वस्थ और आरामदायक सुबह की दिनचर्या है, ${patientName} जी:\n1. 🚰 उठते ही एक गिलास गुनगुना पानी पिएं।\n2. 🧘‍♂️ 5-10 मिनट हल्की स्ट्रेचिंग करें और 3 बार गहरी सांस लें।\n3. 💊 डॉक्टर द्वारा बताई गई सुबह की दवाइयां समय पर लें।\n4. 🍵 हल्का पौष्टिक नाश्ता करें और एक कप गरम चाय का आनंद लें।\n5. 🚶‍♂️ कुछ देर खुली धूप में टहलें।`;
+    if (lang === 'bn') return `আপনার স্বাস্থ্যকর সকালের রুটিন, ${patientName}:\n১. সকালে উঠে এক গ্লাস গরম জল খান।\n২. একটু হালকা শরীরচর্চা করুন।\n৩. সকালের ওষুধ ও প্রাতরাশ গ্রহণ করুন।\n৪. মিষ্টি রোদে একটু হাঁটুন।`;
+    return `Here is your healthy morning routine, ${patientName}:\n1. Drink a warm glass of water.\n2. Do 5 minutes of gentle stretches.\n3. Take morning medications on time.\n4. Enjoy a wholesome breakfast and tea.\n5. Take a short walk in the morning sun.`;
+  }
+
+  // 5. Appetite / Health / Sleep / Pain
+  if (/(भूख.*नहीं|नींद.*नहीं|दर्द|दवा.*(भूल|याद)|कमजोरी|सिरदर्द|पेट|bhukh.*nahi|neend.*nahi|dard|dawa.*bhul|appetite|insomnia|forgot.*medic|headache|stomach|হেঁপাহ.*নাই|টোপনি.*নাই|বিষ|ঔষধ.*পাহৰিলোঁ)/i.test(clean)) {
+    if (/(भूख|appetite|হেঁপাহ)/i.test(clean)) {
+      if (lang === 'hi') return `अगर भूख कम लग रही है, ${patientName} जी, तो थोड़ा गुनगुना पानी या नींबू-पानी पिएं, और एक साथ भारी भोजन करने के बजाय थोड़ा-थोड़ा हल्का सूप, दलिया या फल खाएं।`;
+      return `If your appetite feels low, ${patientName}, try sipping warm water and eating light soup or fresh fruit.`;
+    }
+    if (lang === 'hi') return `आपकी सेहत सबसे पहले है, ${patientName} जी। थोड़ा गुनगुना पानी पिएं, आराम से बैठें और यदि कोई परेशानी हो तो परिवार के सदस्य को अवश्य बताएं।`;
+    return `Your health and comfort are the top priority, ${patientName}. Please stay hydrated, rest comfortably, and let a caregiver or loved one know if you need assistance.`;
+  }
+
+  // 6. Tension / Anxiety / Stress
   if (/(tens|tesn|stres|anx|worr|scared|fear|panik|panic|nervous|troubl|chinta|ghabrahat|অশান্তি|চিন্তা|ভয়|घबराहट|चिंता|डर)/i.test(clean)) {
     if (lang === 'as') return `আপুনি অকণো চিন্তা নকৰিব, ${patientName}। মোৰ লগত লাহেকৈ এটা দীঘল উশাহ লওক—উশাহ ভিতৰলৈ লওক আৰু এৰি দিয়ক। আপুনি সম্পূৰ্ণ সুৰক্ষিত।`;
     if (lang === 'hi') return `बिल्कुल चिंता न करें, ${patientName} जी। मेरे साथ एक गहरी सांस लें और धीरे से छोड़ें। आप पूरी तरह सुरक्षित हैं।`;
     if (lang === 'bn') return `একদম চিন্তা করবেন না, ${patientName}। আমার সাথে আস্তে আস্তে একটি গভীর শ্বাস নিন। আপনি সম্পূর্ণ নিরাপদ।`;
     if (lang === 'mn') return `অদোম ৱাখল চাফোং তৌবীগনূ, ${patientName}। ঐহাক অদোমগী নকন্দা লৈরি।`;
     if (lang === 'mz') return `Hahdam tak khan thawk la rawh le, ${patientName}. I kiangah ka awm tlat a nia.`;
-    return `Take a gentle, slow breath with me, ${patientName}. Inhale slowly... and exhale gently. You are in a safe place. Would you like to do a 1-minute calming exercise, or talk about a happy memory?`;
+    return `Take a gentle, slow breath with me, ${patientName}. Inhale slowly... and exhale gently. You are in a safe place.`;
   }
 
+  // 7. General What to do / Guidance
   if (/(what.*(to|should).*do|wt.*do|wat.*do|now.*what|confus|help|ki.*korim|kya.*karu|কি.*কৰিম|কি.*কৰোঁ|কী.*করব|क्या.*करूँ|क्या.*करे)/i.test(clean)) {
     if (lang === 'as') return `আমি কেইটামান সহজ কাম কৰিব পাৰোঁ, ${patientName}:\n১. ৩ বাৰ দীঘল উশাহ লওক\n২. এগিলাচ পানী খাওক\n৩. পুৰণি স্মৃতিৰ কথা পাতোঁ।`;
-    if (lang === 'hi') return `हम साथ मिलकर कुछ आसान काम कर सकते हैं, ${patientName} जी:\n1. 3 बार गहरी सांस लें\n2. थोड़ा सा पानी पिएं\n3. कोई सुखद याद साझा करें।`;
+    if (lang === 'hi') return `हम साथ मिलकर कुछ आसान काम कर सकते हैं, ${patientName} जी:\n1. 3 बार गहरी सांस लें\n2. थोड़ा सा पानी पिएं\n3. कोई सुखद याद साझा करें या पहेली खेलें।`;
     if (lang === 'bn') return `আমরা কিছু সহজ কাজ করতে পারি, ${patientName}:\n১. ৩ বার গভীর শ্বাস নিন\n২. একটু জল খান\n৩. সুন্দর স্মৃতি নিয়ে কথা বলি।`;
-    return `Here are three relaxing things we can do together right now, ${patientName}:\n1. Take 3 slow, calming breaths with me.\n2. Have a warm cup of water or tea.\n3. Play a gentle memory game or look at scrapbook photos.\n\nWhich one feels nice to you?`;
+    return `Here are three relaxing things we can do together right now, ${patientName}:\n1. Take 3 slow, calming breaths with me.\n2. Have a warm cup of water or tea.\n3. Play a gentle memory game or look at scrapbook photos.`;
   }
 
-  if (/(sad|lonel|alon|unhapp|depres|cry|miss|mon.*bhal|মন.*বেয়া|মন.*খারাপ|उदास|अकेला|दुख)/i.test(clean)) {
-    if (lang === 'as') return `মই সদায় আপোনাৰ কাষতেই আছোঁ, ${patientName}। আপুনি কেতিয়াও অকলশৰীয়া নহয়। আপোনাৰ মনৰ কথা মোক কওক।`;
-    if (lang === 'hi') return `मैं हमेशा आपके साथ यहाँ मौजूद हूँ, ${patientName} जी। आप कभी अकेले नहीं हैं। मुझसे बेझिझक बात कीजिए।`;
-    if (lang === 'bn') return `আমি সবসময় আপনার পাশে আছি, ${patientName}। আপনি একা নন।`;
-    return `I am right here beside you, ${patientName}. You are never alone. Please feel free to share whatever is in your heart—I am always here to listen with patience and warmth.`;
-  }
-
-  if (/(tea|garden|assam|kaziranga|bihu|nature|river|brahmaputra|চাহ|বাগিচা|বৰলুইত|কাজিৰঙা|বিহু|চা|चाय|बागान|बिहू)/i.test(clean)) {
-    if (lang === 'as') return `অসমৰ সেউজীয়া চাহ বাগিচা আৰু বৰলুইতৰ শীতল বতাহে মনলৈ অনাবিল শান্তি আনে, ${patientName}!`;
-    if (lang === 'hi') return `असम के हरे-भरे चाय के बागान और ब्रह्मपुत्र की ताज़ी हवा मन को सुकून पहुँचाती है, ${patientName} जी!`;
-    if (lang === 'bn') return `আসামের সবুজ চা বাগান আর প্রকৃতির স্নিগ্ধ বাতাস সত্যি মন ভালো করে দেয়, ${patientName}!`;
-    return `The lush green tea gardens of Assam, the morning mist, and the gentle Brahmaputra breeze bring so much tranquility, ${patientName}! Reminiscing about such serene places always refreshes the spirit.`;
-  }
-
+  // 8. Riddles & Games
   if (/(game|quiz|riddle|puzzle|play|test.*memory|সাঁথৰ|খেল|पहेली|खेल|ধাঁধা)/i.test(clean)) {
     if (lang === 'as') return `আহক এটা সাঁথৰ ভাঙোঁ, ${patientName}! যাৰ হাত আছে কিন্তু হাততালি দিব নোৱাৰে, সেয়া কি? (ই বেৰত ওলমি সময় দেখুৱায়!)`;
     if (lang === 'hi') return `आइए एक पहेली खेलते हैं, ${patientName} जी! जिसके हाथ होते हैं पर ताली नहीं बजा सकती, वह क्या है? (संकेत: दीवार पर टंगी घड़ी!)`;
@@ -120,12 +151,20 @@ const getLocalCompanionReply = (message: string, langPref: string, patientName: 
     return `Let's play a fun memory exercise, ${patientName}! What has hands, but cannot clap? (Hint: It hangs on the wall and tells time!)`;
   }
 
+  // 9. Tea Gardens & Nature
+  if (/(tea|garden|assam|kaziranga|bihu|nature|river|brahmaputra|চাহ|বাগিচা|বৰলুইত|কাজিৰঙা|বিহু|চা|चाय|बागान|बिहू)/i.test(clean)) {
+    if (lang === 'as') return `অসমৰ সেউজীয়া চাহ বাগিচা আৰু বৰলুইতৰ শীতল বতাহে মনলৈ অনাবিল শান্তি আনে, ${patientName}!`;
+    if (lang === 'hi') return `असम के हरे-भरे चाय के बागान और ब्रह्मपुत्र की ताज़ी हवा मन को सुकून पहुँचाती है, ${patientName} जी!`;
+    return `The lush green tea gardens of Assam and the gentle Brahmaputra breeze bring so much tranquility, ${patientName}!`;
+  }
+
+  // 10. General rotation
   if (lang === 'as') return `মই আপোনাৰ কথা মন দি শুনি আছোঁ, ${patientName}। এই বিষয়ে মোক আৰু অকণমান কওকচোন।`;
-  if (lang === 'hi') return `मैं आपकी बात बहुत ध्यान से सुन रहा हूँ, ${patientName} जी। मुझे इसके बारे में थोड़ा और बताइए।`;
+  if (lang === 'hi') return `आपके साथ बातचीत करके बहुत खुशी मिल रही है, ${patientName} जी। मुझे इसके बारे में थोड़ा और बताइए!`;
   if (lang === 'bn') return `আমি আপনার কথা মন দিয়ে শুনছি, ${patientName}। এই বিষয়ে আমাকে আর একটু বলুন।`;
   if (lang === 'mn') return `ঐহাক অদোমগী ৱাফম তারিবনি, ${patientName}। মসিগী মরমদা হেন্না হায়বীরকো!`;
   if (lang === 'mz') return `I thusawi chu ka ngaithla uluk hle mai, ${patientName}. Sawi zawm zel rawh le!`;
-  return `I am listening with an open heart, ${patientName}. That is so meaningful—please tell me more about what is on your mind!`;
+  return `I am listening with an open heart, ${patientName}. Please tell me more about what is on your mind!`;
 };
 
 export const MitrAIScreen: React.FC = () => {
