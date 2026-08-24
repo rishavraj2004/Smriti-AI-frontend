@@ -24,7 +24,8 @@
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "expo start",
+    "start": "node scripts/start-lan.js",
+    "lan": "node scripts/start-lan.js",
     "tunnel": "node scripts/tunnel.js",
     "tunnel:expo": "expo start --tunnel -c",
     "tunnel:backend": "npx --yes localtunnel --port 3000",
