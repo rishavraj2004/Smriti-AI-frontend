@@ -26,23 +26,31 @@ export const gamesApi = {
     if (difficulty) params.difficulty = difficulty;
     if (language) params.language = language;
 
-    const response = await apiClient.get<{ success: boolean; game: GameConfig }>('/api/games/next', {
-      params,
-    });
-    return response.data;
+    try {
+      const response = await apiClient.get<{ success: boolean; game: GameConfig }>('/api/games/next', {
+        params,
+      });
+      return response.data;
+    } catch {
+      return { success: false, game: null as any };
+    }
   },
 
   /**
    * Submits raw interaction metrics to backend for official score computation and MongoDB persistence.
    */
-  async submitSession(payload: SubmitSessionPayload): Promise<SubmitSessionResponse> {
+  async submitSession(payload: SubmitSessionPayload): Promise<SubmitSessionResponse | null> {
     const normalizedPayload = {
       ...payload,
       gameType: normalizeBackendGameType(payload.gameType),
     };
 
-    const response = await apiClient.post<SubmitSessionResponse>('/api/games/session', normalizedPayload);
-    return response.data;
+    try {
+      const response = await apiClient.post<SubmitSessionResponse>('/api/games/session', normalizedPayload);
+      return response.data;
+    } catch {
+      return null;
+    }
   },
 
   /**
@@ -55,8 +63,25 @@ export const gamesApi = {
     domainScores: DomainScores;
     sessions: GameResult[];
   }> {
-    const response = await apiClient.get('/api/games/history');
-    return response.data;
+    try {
+      const response = await apiClient.get('/api/games/history');
+      return response.data;
+    } catch {
+      return {
+        success: false,
+        totalGamesPlayed: 0,
+        averagePerformance: null,
+        domainScores: {
+          memory: null,
+          attention: null,
+          mathMemory: null,
+          objectRecognition: null,
+          routineRecall: null,
+          wordAssociation: null,
+        },
+        sessions: [],
+      };
+    }
   },
 
   /**
@@ -73,25 +98,22 @@ export const gamesApi = {
       });
       return response.data;
     } catch (err: any) {
-      if (err?.status === 404) {
-        return {
-          success: true,
-          patient: null as any,
-          overallPerformance: null,
-          totalGamesPlayed: 0,
-          trend: 'Stable',
-          domainScores: {
-            memory: null,
-            attention: null,
-            mathMemory: null,
-            objectRecognition: null,
-            routineRecall: null,
-            wordAssociation: null,
-          },
-          recentSessions: [],
-        };
-      }
-      throw err;
+      return {
+        success: true,
+        patient: null as any,
+        overallPerformance: null,
+        totalGamesPlayed: 0,
+        trend: 'Stable',
+        domainScores: {
+          memory: null,
+          attention: null,
+          mathMemory: null,
+          objectRecognition: null,
+          routineRecall: null,
+          wordAssociation: null,
+        },
+        recentSessions: [],
+      };
     }
   },
 
@@ -112,15 +134,12 @@ export const gamesApi = {
         headers,
       });
       return response.data;
-    } catch (err: any) {
-      if (err?.status === 404) {
-        return {
-          success: true,
-          totalSessions: 0,
-          sessions: [],
-        };
-      }
-      throw err;
+    } catch {
+      return {
+        success: true,
+        totalSessions: 0,
+        sessions: [],
+      };
     }
   },
 };

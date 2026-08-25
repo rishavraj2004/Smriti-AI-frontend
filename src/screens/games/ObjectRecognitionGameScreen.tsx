@@ -16,6 +16,67 @@ interface ObjectRecognitionGameScreenProps {
   onContinueNext?: () => void;
 }
 
+// Intelligent contextual emoji and icon resolver for diverse options across languages
+const resolveOptionIcon = (text: string, index: number, explicitEmoji?: string): string => {
+  if (explicitEmoji && explicitEmoji !== '🌿' && explicitEmoji !== '🔹') {
+    return explicitEmoji;
+  }
+
+  const lower = (text || '').toLowerCase().trim();
+
+  // 1. Beverages & Liquids
+  if (lower.includes('tea') || lower.includes('चाय') || lower.includes('চাহ') || lower.includes('চা') || lower.includes('thingpui')) return '🍵';
+  if (lower.includes('coffee') || lower.includes('कॉफ़ी') || lower.includes('कफी')) return '☕';
+  if (lower.includes('sugarcane') || lower.includes('गन्ना') || lower.includes('ইক্ষু') || lower.includes('juice') || lower.includes('रस') || lower.includes('জুস')) return '🧃';
+  if (lower.includes('coconut') || lower.includes('नारियल') || lower.includes('নাৰিকল') || lower.includes('নারকেল')) return '🥥';
+  if (lower.includes('water') || lower.includes('पानी') || lower.includes('পানী') || lower.includes('জল')) return '💧';
+  if (lower.includes('milk') || lower.includes('दूध') || lower.includes('গাখীৰ') || lower.includes('দুধ') || lower.includes('lassi') || lower.includes('लस्सी')) return '🥛';
+
+  // 2. Animals & Wildlife
+  if (lower.includes('rhino') || lower.includes('गैंडा') || lower.includes('গঁড়') || lower.includes('গণ্ডার') || lower.includes('সমুক')) return '🦏';
+  if (lower.includes('elephant') || lower.includes('हाथी') || lower.includes('হাতী') || lower.includes('হাতি')) return '🐘';
+  if (lower.includes('deer') || lower.includes('हिरण') || lower.includes('হৰিণা') || lower.includes('হরিণ')) return '🦌';
+  if (lower.includes('tiger') || lower.includes('बाघ') || lower.includes('বাঘ')) return '🐅';
+  if (lower.includes('bird') || lower.includes('hornbill') || lower.includes('पक्षी') || lower.includes('ধনেশ') || lower.includes('পাখি') || lower.includes('উচেক')) return '🦜';
+  if (lower.includes('fish') || lower.includes('मछली') || lower.includes('মাছ')) return '🐟';
+
+  // 3. Cultural Artifacts, Crafts & Household
+  if (lower.includes('bamboo') || lower.includes('बांस') || lower.includes('বাঁহ') || lower.includes('বাঁশ') || lower.includes('basket') || lower.includes('टोकरी') || lower.includes('japi') || lower.includes('জাপি') || lower.includes('খাং')) return '🎋';
+  if (lower.includes('pot') || lower.includes('clay') || lower.includes('बर्तन') || lower.includes('মাটিৰ') || lower.includes('মাটির') || lower.includes('কলহ') || lower.includes('মটকা') || lower.includes('ঘड़ा')) return '🏺';
+  if (lower.includes('chair') || lower.includes('कुर्सी') || lower.includes('চকী') || lower.includes('চেয়ার')) return '🪑';
+  if (lower.includes('table') || lower.includes('मेज') || lower.includes('টেবিল') || lower.includes('কাষ্ঠ')) return '🪵';
+  if (lower.includes('lamp') || lower.includes('दिया') || lower.includes('চাকি') || lower.includes('প্রদীপ')) return '🪔';
+  if (lower.includes('bell') || lower.includes('घंटी') || lower.includes('ঘণ্টা')) return '🔔';
+
+  // 4. Musical Instruments
+  if (lower.includes('dhol') || lower.includes('drum') || lower.includes('ढोल') || lower.includes('ঢোল') || lower.includes('khuang')) return '🥁';
+  if (lower.includes('flute') || lower.includes('pepa') || lower.includes('बांसुरी') || lower.includes('पेपा') || lower.includes('বাঁশী') || lower.includes('পেঁপা')) return '🪈';
+  if (lower.includes('guitar') || lower.includes('गिटार') || lower.includes('গিটাৰ')) return '🎸';
+  if (lower.includes('trumpet') || lower.includes('तुरही')) return '🎺';
+  if (lower.includes('cymbals') || lower.includes('झांझ') || lower.includes('তাল')) return '🔔';
+
+  // 5. Fruits, Food & Agriculture
+  if (lower.includes('starfruit') || lower.includes('कमरख') || lower.includes('কৰ্দৈ') || lower.includes('কামরাঙা')) return '⭐';
+  if (lower.includes('apple') || lower.includes('सेब') || lower.includes('আপেল')) return '🍎';
+  if (lower.includes('banana') || lower.includes('केला') || lower.includes('কল') || lower.includes('কলা')) return '🍌';
+  if (lower.includes('mango') || lower.includes('आम') || lower.includes('আম')) return '🥭';
+  if (lower.includes('orange') || lower.includes('संतरा') || lower.includes('কমলা')) return '🍊';
+  if (lower.includes('paddy') || lower.includes('rice') || lower.includes('धान') || lower.includes('चावल') || lower.includes('ধান') || lower.includes('ভাত')) return '🌾';
+
+  // 6. Textiles, Nature & Geography
+  if (lower.includes('silk') || lower.includes('muga') || lower.includes('रेशम') || lower.includes('চাদৰ') || lower.includes('শাড়ী') || lower.includes('মেখেলা') || lower.includes('कपड़ा') || lower.includes('গামোচা') || lower.includes('gamusa')) return '🧣';
+  if (lower.includes('river') || lower.includes('boat') || lower.includes('नदी') || lower.includes('नाव') || lower.includes('নৈ') || lower.includes('নাও') || lower.includes('লোকটক')) return '⛵';
+  if (lower.includes('mountain') || lower.includes('hill') || lower.includes('पहाड़') || lower.includes('পাহাৰ')) return '⛰️';
+  if (lower.includes('flower') || lower.includes('फूल') || lower.includes('ফুল') || lower.includes('rhodo') || lower.includes('পদ্ম') || lower.includes('कमल')) return '🌸';
+  if (lower.includes('tree') || lower.includes('forest') || lower.includes('पेड़') || lower.includes('জঙ্গল') || lower.includes('গাছ')) return '🌳';
+  if (lower.includes('sun') || lower.includes('सूरज') || lower.includes('সূৰ্য')) return '☀️';
+  if (lower.includes('moon') || lower.includes('चांद') || lower.includes('জোন')) return '🌙';
+
+  // 7. Distinct slot badges if no keyword matches
+  const slotFallbacks = ['📌', '🏷️', '📦', '🔍', '✨', '🎯'];
+  return slotFallbacks[index % slotFallbacks.length];
+};
+
 export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenProps> = ({
   onBack,
   config,
@@ -58,7 +119,45 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
     setAdaptationDetails(null);
 
     if (config?.content?.questions && Array.isArray(config.content.questions) && config.content.questions.length > 0) {
-      setQuestions(config.content.questions);
+      // Normalize dynamic questions from backend API / AI generator
+      const normalized: LocalizedObjectQuestion[] = config.content.questions.map((q: any, idx: number) => {
+        const prompt = q.prompt || q.question || q.title || `Question ${idx + 1}`;
+        const rawCorrect = q.correctAnswer || q.correct_answer || q.answer || '';
+        const rawOptions = Array.isArray(q.options) ? q.options : [];
+
+        const options = rawOptions.map((opt: any, optIdx: number) => {
+          const text = typeof opt === 'string' ? opt : (opt.name || opt.text || opt.label || opt.title || opt.option || opt.value || `Option ${optIdx + 1}`);
+          const explicitEmoji = typeof opt === 'object' ? (opt.emoji || opt.icon) : undefined;
+          const emoji = resolveOptionIcon(text, optIdx, explicitEmoji);
+          const label = opt?.label || String.fromCharCode(65 + optIdx);
+
+          return {
+            name: text,
+            emoji,
+            label,
+          };
+        });
+
+        // Resolve correctAnswer if provided as index or letter
+        let resolvedCorrect = typeof rawCorrect === 'string' ? rawCorrect : '';
+        if (typeof rawCorrect === 'number' && options[rawCorrect]) {
+          resolvedCorrect = options[rawCorrect].name;
+        } else if (typeof rawCorrect === 'string' && rawCorrect.length === 1 && rawCorrect >= 'A' && rawCorrect <= 'Z') {
+          const letterIdx = rawCorrect.charCodeAt(0) - 65;
+          if (options[letterIdx]) {
+            resolvedCorrect = options[letterIdx].name;
+          }
+        }
+
+        return {
+          id: q.id || idx + 1,
+          prompt,
+          correctAnswer: resolvedCorrect || (options[0] ? options[0].name : ''),
+          options,
+          hint: q.hint || q.explanation || '',
+        };
+      });
+      setQuestions(normalized);
     } else {
       setQuestions(getObjectQuestionsData(language));
     }
@@ -67,15 +166,19 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
   const currentQ = questions[currentIdx] || questions[0];
   const totalCount = questions.length;
 
-  const handleSelect = (name: string) => {
+  const handleSelect = (optionName: string) => {
     if (selectedOption !== null || !currentQ) return;
-    setSelectedOption(name);
+    setSelectedOption(optionName);
 
-    const isCorrect = name === currentQ.correctAnswer;
-    const nextCorrect = isCorrect ? correctAnswers + 1 : correctAnswers;
-    const nextMistakes = !isCorrect ? mistakes + 1 : mistakes;
+    const isMatch =
+      optionName === currentQ.correctAnswer ||
+      (currentQ.correctAnswer &&
+        optionName.toLowerCase().trim() === currentQ.correctAnswer.toLowerCase().trim());
 
-    if (isCorrect) setCorrectAnswers(nextCorrect);
+    const nextCorrect = isMatch ? correctAnswers + 1 : correctAnswers;
+    const nextMistakes = !isMatch ? mistakes + 1 : mistakes;
+
+    if (isMatch) setCorrectAnswers(nextCorrect);
     else setMistakes(nextMistakes);
 
     setTimeout(() => {
@@ -160,31 +263,44 @@ export const ObjectRecognitionGameScreen: React.FC<ObjectRecognitionGameScreenPr
 
           <View style={styles.optionsContainer}>
             {currentQ.options.map((opt, index) => {
-              const isChosen = selectedOption === opt.name;
-              const isCorrect = selectedOption !== null && opt.name === currentQ.correctAnswer;
-              const isWrong = isChosen && opt.name !== currentQ.correctAnswer;
+              const optText = typeof opt === 'string' ? opt : (opt.name || opt.label || String(opt));
+              const explicitEmoji = typeof opt === 'object' ? opt.emoji : undefined;
+              const optEmoji = resolveOptionIcon(optText, index, explicitEmoji);
+              const letterBadge = String.fromCharCode(65 + index);
+              const isChosen = selectedOption === optText;
+              const isCorrect =
+                selectedOption !== null &&
+                (optText === currentQ.correctAnswer ||
+                  (currentQ.correctAnswer &&
+                    optText.toLowerCase().trim() === currentQ.correctAnswer.toLowerCase().trim()));
+              const isWrong = isChosen && !isCorrect;
 
               return (
                 <TouchableOpacity
-                  key={`${opt.name}-${index}`}
+                  key={`${optText}-${index}`}
                   style={[
                     styles.optBtn,
                     isChosen && styles.optBtnChosen,
                     isCorrect && styles.optBtnCorrect,
                     isWrong && styles.optBtnWrong,
                   ]}
-                  onPress={() => handleSelect(opt.name)}
+                  onPress={() => handleSelect(optText)}
                   activeOpacity={0.75}
                   disabled={selectedOption !== null}
                 >
-                  <Text style={styles.optEmoji}>{opt.emoji}</Text>
+                  <View style={[styles.letterCircle, (isChosen || isCorrect) && styles.letterCircleActive]}>
+                    <Text style={[styles.letterText, (isChosen || isCorrect) && styles.letterTextActive]}>
+                      {letterBadge}
+                    </Text>
+                  </View>
+                  <Text style={styles.optEmoji}>{optEmoji}</Text>
                   <Text
                     style={[
                       styles.optText,
                       (isChosen || isCorrect) && styles.optTextChosen,
                     ]}
                   >
-                    {opt.name}
+                    {optText}
                   </Text>
                   {isCorrect && <Text style={styles.badgeEmoji}>✓</Text>}
                 </TouchableOpacity>
@@ -335,13 +451,14 @@ const styles = StyleSheet.create({
   optBtn: {
     backgroundColor: COLORS.bgCard,
     borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     alignItems: 'center',
     flexDirection: 'row',
     ...SHADOWS.card,
     borderWidth: 2,
     borderColor: '#E2E8F0',
+    minHeight: 64,
   },
   optBtnChosen: {
     borderColor: COLORS.primary,
@@ -355,9 +472,32 @@ const styles = StyleSheet.create({
     borderColor: '#EF4444',
     backgroundColor: '#FEE2E2',
   },
+  letterCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  letterCircleActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primaryDark,
+  },
+  letterText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: COLORS.textMuted,
+  },
+  letterTextActive: {
+    color: '#FFFFFF',
+  },
   optEmoji: {
-    fontSize: 32,
-    marginRight: 14,
+    fontSize: 26,
+    marginRight: 12,
   },
   optText: {
     fontSize: 17,

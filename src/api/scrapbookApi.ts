@@ -4,19 +4,39 @@ import { FamilyMemory, CreateMemoryPayload, UpdateMemoryPayload, ScrapbookRespon
 export const scrapbookApi = {
   /**
    * Fetch all memories for the authenticated user (or caregiver's linked patient)
+   * Includes automatic retry for Render cold starts (502 / 503)
    */
   async getMemories(patientId?: string): Promise<FamilyMemory[]> {
     const params = patientId ? { patientId } : undefined;
-    const response = await apiClient.get<ScrapbookResponse>('/api/memories', { params });
-    return response.data.memories || [];
+    try {
+      const response = await apiClient.get<ScrapbookResponse>('/api/memories', { params });
+      return response.data.memories || [];
+    } catch (err: any) {
+      // If server is cold-starting (502 / 503 / network timeout), retry once after a short delay
+      if (err.status === 502 || err.status === 503 || err.message?.includes('502') || err.message?.includes('503')) {
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          const retryRes = await apiClient.get<ScrapbookResponse>('/api/memories', { params });
+          return retryRes.data.memories || [];
+        } catch {
+          // Graceful fallback to empty list
+          return [];
+        }
+      }
+      return [];
+    }
   },
 
   /**
    * Fetch a single memory by ID
    */
   async getMemory(id: string): Promise<FamilyMemory | null> {
-    const response = await apiClient.get<ScrapbookResponse>(`/api/memories/${id}`);
-    return response.data.memory || null;
+    try {
+      const response = await apiClient.get<ScrapbookResponse>(`/api/memories/${id}`);
+      return response.data.memory || null;
+    } catch {
+      return null;
+    }
   },
 
   /**
@@ -45,8 +65,12 @@ export const scrapbookApi = {
    * Delete a memory from the scrapbook
    */
   async deleteMemory(id: string): Promise<boolean> {
-    const response = await apiClient.delete<ScrapbookResponse>(`/api/memories/${id}`);
-    return response.data.success;
+    try {
+      const response = await apiClient.delete<ScrapbookResponse>(`/api/memories/${id}`);
+      return response.data.success;
+    } catch {
+      return false;
+    }
   },
 
   /**

@@ -56,7 +56,27 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
     setAdaptationDetails(null);
 
     if (config?.content?.questions && Array.isArray(config.content.questions) && config.content.questions.length > 0) {
-      setPrompts(config.content.questions);
+      const normalized: LocalizedWordPrompt[] = config.content.questions.map((p: any, idx: number) => {
+        const prefix = p.prefix || p.prompt || p.question || '';
+        const rawOptions = Array.isArray(p.options) ? p.options : [];
+        const options = rawOptions.map((opt: any) =>
+          typeof opt === 'string' ? opt : opt.word || opt.text || opt.name || opt.label || String(opt)
+        );
+        const rawCorrect = p.correctWord || p.correct_word || p.correctAnswer || p.answer || '';
+        let correctWord = typeof rawCorrect === 'string' ? rawCorrect : '';
+        if (typeof rawCorrect === 'number' && options[rawCorrect]) {
+          correctWord = options[rawCorrect];
+        }
+
+        return {
+          id: p.id || idx + 1,
+          prefix,
+          correctWord: correctWord || options[0] || '',
+          options,
+          hint: p.hint || '',
+        };
+      });
+      setPrompts(normalized);
     } else {
       setPrompts(getWordPromptsData(language));
     }
@@ -69,7 +89,11 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
     if (selectedOption !== null || !currentP) return;
     setSelectedOption(opt);
 
-    const isCorrect = opt === currentP.correctWord;
+    const isCorrect =
+      opt === currentP.correctWord ||
+      (currentP.correctWord &&
+        opt.toLowerCase().trim() === currentP.correctWord.toLowerCase().trim());
+
     const nextCorrect = isCorrect ? correctAnswers + 1 : correctAnswers;
     const nextMistakes = !isCorrect ? mistakes + 1 : mistakes;
 
@@ -152,13 +176,18 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
 
           <View style={styles.optionsList}>
             {currentP.options.map((opt, index) => {
-              const isSelected = selectedOption === opt;
-              const isCorrect = selectedOption !== null && opt === currentP.correctWord;
-              const isWrong = isSelected && opt !== currentP.correctWord;
+              const optText = typeof opt === 'string' ? opt : (opt as any).word || (opt as any).text || String(opt);
+              const isSelected = selectedOption === optText;
+              const isCorrect =
+                selectedOption !== null &&
+                (optText === currentP.correctWord ||
+                  (currentP.correctWord &&
+                    optText.toLowerCase().trim() === currentP.correctWord.toLowerCase().trim()));
+              const isWrong = isSelected && !isCorrect;
 
               return (
                 <TouchableOpacity
-                  key={`${opt}-${index}`}
+                  key={`${optText}-${index}`}
                   style={[
                     styles.optionCard,
                     isSelected && styles.optionChosen,
@@ -166,7 +195,7 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
                     isWrong && styles.optionWrong,
                   ]}
                   activeOpacity={0.8}
-                  onPress={() => handleSelect(opt)}
+                  onPress={() => handleSelect(optText)}
                   disabled={selectedOption !== null}
                 >
                   <Text
@@ -175,7 +204,7 @@ export const WordAssociationGameScreen: React.FC<WordAssociationGameScreenProps>
                       (isSelected || isCorrect) && styles.optionTextChosen,
                     ]}
                   >
-                    {opt}
+                    {optText}
                   </Text>
                   {isCorrect && <Text style={styles.badgeEmoji}>✓</Text>}
                 </TouchableOpacity>
@@ -256,9 +285,8 @@ const styles = StyleSheet.create({
   promptCard: {
     backgroundColor: COLORS.bgCard,
     borderRadius: 20,
-    padding: 22,
+    padding: 20,
     width: '100%',
-    alignItems: 'center',
     marginBottom: 14,
     ...SHADOWS.card,
     borderWidth: 2,
@@ -267,7 +295,7 @@ const styles = StyleSheet.create({
   badgeRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   pCount: {
     fontSize: 13,
@@ -283,29 +311,28 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '800',
     color: COLORS.textDark,
-    textAlign: 'center',
-    marginBottom: 14,
+    lineHeight: 28,
+    marginBottom: 12,
   },
   blankBox: {
-    backgroundColor: '#F1F5F9',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 14,
+    backgroundColor: COLORS.bgMain,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: COLORS.primary,
     borderStyle: 'dashed',
-    width: '100%',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     alignItems: 'center',
   },
   blankText: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '700',
     color: COLORS.primaryDark,
   },
   hintCard: {
     backgroundColor: '#FEF3C7',
     borderRadius: 14,
-    padding: 12,
+    padding: 14,
     width: '100%',
     marginBottom: 14,
     borderWidth: 1,
@@ -315,6 +342,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#92400E',
     fontWeight: '600',
+    lineHeight: 20,
   },
   optionsPrompt: {
     fontSize: 16,
@@ -335,9 +363,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    ...SHADOWS.card,
     borderWidth: 2,
     borderColor: '#E2E8F0',
-    ...SHADOWS.card,
+    minHeight: 64,
   },
   optionChosen: {
     borderColor: COLORS.primary,
@@ -352,9 +381,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEE2E2',
   },
   optionText: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '700',
     color: COLORS.textDark,
+    flex: 1,
   },
   optionTextChosen: {
     color: COLORS.primaryDark,
@@ -363,5 +393,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#16A34A',
     fontWeight: '900',
+    marginLeft: 8,
   },
 });
